@@ -1,0 +1,6 @@
+tree_add_attribute.pl
+=====================
+
+Option h is ambiguous (header, help)
+ Provide a tree file (newick or nexus).
+
