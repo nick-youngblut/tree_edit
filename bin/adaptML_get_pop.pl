@@ -32,13 +32,54 @@ $abund_cut = 20 if ! $abund_cut;
 ### MAIN
 my $treeo = tree_io($tree_in, $format);
 my $habs_ref = load_habitat($habitat_in);
-$treeo = find_pops($treeo, $habs_ref, $abund_cut);
-#print_node_ids($treeo, "true", "true");
-#$habs_ref = filter_habs($habs_ref, $abund_cut);				# filtering by abundance
-exit;
-#get_leaf_branch_lengths($treeo);
+my $pops_ref = find_pops($treeo, $habs_ref, $abund_cut);
+write_pop_sum_table($pops_ref, $tree_in);
+write_pop_taxa_table($pops_ref, $habs_ref, $tree_in);
 
 ### Subroutines
+sub write_pop_taxa_table{
+# writing the taxa per pop table #
+	my ($pops_ref, $habs_ref, $tree_in) = @_;
+	
+	# making outfile #
+	(my $outfile = $tree_in) =~ s/\.[^\.]+$/_taxa.txt/;
+	open OUT, ">$outfile" or die $!;
+	
+	# writing table #
+	print OUT join("\t", qw/Population Taxon Habitat/), "\n";
+	foreach my $pop (keys %$pops_ref){
+		foreach my $cat (keys %{$$pops_ref{$pop}}){
+			next if ref $$pops_ref{$pop}{$cat} ne "ARRAY"; 		# just array
+			foreach my $taxon (@{$$pops_ref{$pop}{$cat}}){
+				die " ERROR: $taxon not found in habitat file!\n" if ! exists $$habs_ref{$taxon};
+				print OUT join("\t", $pop, $taxon, $$habs_ref{$taxon}), "\n";
+				}
+			}
+		}
+	
+	close OUT;
+	}
+
+sub write_pop_sum_table{
+	my ($pops_ref, $tree_in) = @_;
+	
+	# making outfile #
+	(my $outfile = $tree_in) =~ s/\.[^\.]+$/_sum.txt/;
+	open OUT, ">$outfile" or die $!;
+	
+	# writing tabel
+	print STDERR "Number of populations: ", scalar keys %$pops_ref, "\n";
+	print OUT join("\t", qw/Population Category Value/), "\n";
+	foreach my $pop (keys %$pops_ref){
+		foreach my $cat (keys %{$$pops_ref{$pop}}){
+			next if ref $$pops_ref{$pop}{$cat} eq "ARRAY"; 
+			print OUT join("\t", $pop, $cat, $$pops_ref{$pop}{$cat}), "\n";
+			}
+		}
+		
+	close OUT;
+	}
+
 sub find_pops{
 	my ($treeo, $habs_ref, $abund_cut) = @_;
 	
@@ -47,10 +88,11 @@ sub find_pops{
 	#my $groups_ref = groups_of_ten($treeo, $root, \%groups);
 	
 	my %pops;
-	my $pops_ref = check_monophyl($root, $treeo, \%pops, $habs_ref, $abund_cut);
+	my $bi_cnt = 0;
+	my $pops_ref = check_monophyl($root, $treeo, \%pops, $habs_ref, $abund_cut, $bi_cnt);
 	
 		#print Dumper $pops_ref; exit;
-	
+	return $pops_ref;
 	}
 
 sub groups_of_ten{
@@ -70,7 +112,10 @@ sub groups_of_ten{
 
 
 sub check_monophyl{
-	my ($node, $treeo, $pops_ref, $habs_ref, $abund_cut) = @_;
+	my ($node, $treeo, $pops_ref, $habs_ref, $abund_cut, $bi_cnt) = @_;
+	
+	# keeping track of bifurcations #
+	$bi_cnt++;
 	
 	# checking for monophyl #
 	my %node_habs;
@@ -91,7 +136,7 @@ sub check_monophyl{
 	my @taxa;
 	foreach my $key (keys %node_habs){
 		if ($node_habs{$key}{"count"} < $abund_cut){
-			print STDERR "Filtering: ", join(",", @{$node_habs{$key}{"taxa"}}),"\n";
+			print STDERR "Filtering: ", join(",", @{$node_habs{$key}{"taxa"}}),"\n" if $verbose;
 			delete $node_habs{$key};
 			}
 		else{
@@ -102,6 +147,8 @@ sub check_monophyl{
 
 	# if monophyl, note node; else continue down tree #
 	if(scalar keys %node_habs == 1){
+		my @habs_arr = keys %node_habs;
+
 		# labeling node #
 		$node->id(scalar keys %$pops_ref);
 
@@ -109,11 +156,12 @@ sub check_monophyl{
 		$$pops_ref{$node->id}{"taxa_count"} = $node_habs_sum;			# number of taxa in population
 		$$pops_ref{$node->id}{"taxa"} = \@taxa;							# taxa in node
 		$$pops_ref{$node->id}{"root_dist"} = $node->depth;				# number of taxa in population
-		
+		$$pops_ref{$node->id}{"bifurcation_count"} = $bi_cnt;			# number of bifurcations from root
+		$$pops_ref{$node->id}{"habitat"} = $habs_arr[0];			# habitat
 		}
 	else{					# continue down tree if not monophyletic
 		for my $child ($node->each_Descendent){
-			$pops_ref = check_monophyl($child, $treeo, $pops_ref, $habs_ref, $abund_cut);
+			$pops_ref = check_monophyl($child, $treeo, $pops_ref, $habs_ref, $abund_cut, $bi_cnt);
 			}
 		}
 	return $pops_ref;
@@ -216,42 +264,65 @@ __END__
 
 =head1 NAME
 
-template.pl -- script template
+adaptML_get_pop.pl -- finding population inferred from AdaptML
 
 =head1 SYNOPSIS
 
-template.pl [options] < input > output
+adaptML_get_pop.pl [-c] [-f] -t -hab
 
 =head2 options
 
 =over
 
-=item -v	Verbose output
+=item -c 		Cutoff for number of taxa required in a population [>=20]
 
-=item -h	This help message
+=item -f 		Format of tree file [newick]
+
+=item -t 		Tree file (newick or nexus format)
+
+=item -hab 	Habitat file (from AdaptML)
+
+=item -v		Verbose output
+
+=item -h		This help message
 
 =back
 
 =head2 For more information:
 
-perldoc template.pl
+perldoc adaptML_get_pop.pl
 
 =head1 DESCRIPTION
 
-The flow of execution is roughly:
-   1) Step 1
-   2) Step 2
-   3) Step 3
+The script finds monophyletic populations for AdaptML-inferred habitats.
+
+See Prehein et al., 2011 (Env Micro), Fig 2a for an example.
+
+=head2 Metrics returned include:
+
+=head3 "INPUT-TREE_sum.txt"
+
+=over
+
+=item * Number of taxa in the population
+
+=item * Branch length from root to lowest common ancestor of population
+
+=item * Number of furcations from root to lowest common ancestor of population
+
+=back
+
+=head3 "INPUT-TREE_taxa.txt"
+
+=over
+
+=item * A table containing the taxa in each population (low abundant taxa removed).
+
+=back
 
 =head1 EXAMPLES
 
-=head2 Usage method 1
 
-template.pl <read1.fastq> <read2.fastq> <output directory or basename>
-
-=head2 Usage method 2
-
-template.pl <library file> <output directory or basename>
 
 =head1 AUTHOR
 
@@ -259,7 +330,7 @@ Nick Youngblut <nyoungb2@illinois.edu>
 
 =head1 AVAILABILITY
 
-sharchaea.life.uiuc.edu:/home/git/
+sharchaea.life.uiuc.edu:/home/git/tree_edit/
 
 =head1 COPYRIGHT
 
