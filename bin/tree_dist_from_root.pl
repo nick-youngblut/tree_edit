@@ -16,7 +16,7 @@ my ($verbose, $tree_in, $habitat_in, $full_in, $format);
 GetOptions(
 	   "tree=s" => \$tree_in,		# tree file
 	   #"habitat=s" => \$habitat_in,	# habitat file (2column)
-	   "full=s" => \$full_in,		# full file (from adaptML)
+	   "x=s" => \$full_in,		# full file (from adaptML)
 	   "format=s" => \$format,		# tree format
 	   "verbose" => \$verbose,
 	   "help|?" => \&pod2usage # Help
@@ -32,16 +32,58 @@ $format = check_format($format);
 my $treeo = tree_io($tree_in, $format);
 #my $habs_ref = load_habitat($habitat_in) if $habitat_in;
 my $full_ref = load_full_file($full_in);
-#print_node_ids($treeo, "true", "true");
-exit;
-#get_leaf_branch_lengths($treeo);
+my $depths_ref = get_node_distances($treeo, $full_ref);
+write_depths($depths_ref);
 
 ### Subroutines
+sub write_depths{
+# writing out branch length from not to root (parsed by habitat #
+	my ($depths_ref) = @_;
+	
+	print join("\t", qw/Habitat Root_distance/), "\n";
+	foreach my $hab (keys %$depths_ref){
+		foreach my $depth (@{$$depths_ref{$hab}}){
+			print join("\t", $hab, $depth), "\n";
+			}
+		}
+	}
+
+sub get_node_distances{
+# getting node distances from root for each not specified in full file #
+	my ($treeo, $full_ref) = @_;
+	
+	my $root = $treeo->get_root_node;
+	
+	#getting nodes #
+	my %depths;
+	my $cnt = 0;
+	foreach (@$full_ref){
+		$cnt++;
+		my @nodes1 = $treeo->find_node(-id => $$_[0]);
+		my @nodes2 = $treeo->find_node(-id => $$_[1]);
+		next if ! @nodes1 || ! @nodes2;
+		die " ERROR: $_ is found 2x in the tree file\n"
+			if scalar @nodes1 > 1 || scalar @nodes2 > 1;
+		my $lca = $treeo->get_lca(-nodes => [$nodes1[0], $nodes2[0]] );
+		
+		# loading distances from root #
+		push(@{$depths{$$_[2]}}, $lca->depth);
+		
+		# status #
+			#last if $cnt == 100;
+		print STDERR "Nodes processed: $cnt of ", scalar @$full_ref, "\n" 
+			if $cnt % 100 == 0 and $verbose;
+		}
+
+		#print Dumper %depths;
+	return \%depths;
+	}
+
 sub load_full_file{
 	my $full_in = shift;
 	
 	open IN, $full_in or die $!;
-	my %full;
+	my @full;
 	my @labels;
 	while(<IN>){
 		chomp;
@@ -54,14 +96,14 @@ sub load_full_file{
 			my @line = split /,/;
 			my @taxa = split /\|/, $line[0];
 			for my $i (2..$#line){
-				$full{$taxa[0]}{$taxa[1]} = $labels[$i-1]
+				push(@full, [$taxa[0], $taxa[1], $labels[$i-1]]) if $line[$i] > 0;
 				}
 			}
 		}
-		
 	close IN;
 
-	print Dumper %full; exit;
+		#print Dumper scalar @full; exit;
+	return \@full;
 	}
 
 sub print_node_ids{
@@ -123,15 +165,21 @@ __END__
 
 =head1 NAME
 
-template.pl -- script template
+tree_dist_from_root.pl -- Get the branch length from root to each node (for AdaptML habitats)
 
 =head1 SYNOPSIS
 
-template.pl [options] < input > output
+tree_dist_from_root.pl [-f] [-v] -t -x > output
 
 =head2 options
 
 =over
+
+=item -t 	Tree file (newick or nexus)
+
+=item -f 	Tree file format [newick]
+
+=item -x 	Full file (from AdaptML)
 
 =item -v	Verbose output
 
@@ -141,24 +189,16 @@ template.pl [options] < input > output
 
 =head2 For more information:
 
-perldoc template.pl
+perldoc tree_dist_from_root.pl
 
 =head1 DESCRIPTION
 
-The flow of execution is roughly:
-   1) Step 1
-   2) Step 2
-   3) Step 3
+The script will find the branch lengths from a particular node to the root.
+The purpose is to determine whether particular habitats are ancestral.
 
 =head1 EXAMPLES
 
-=head2 Usage method 1
-
-template.pl <read1.fastq> <read2.fastq> <output directory or basename>
-
-=head2 Usage method 2
-
-template.pl <library file> <output directory or basename>
+tree_dist_from_root.pl -t itol.tree -full full.file -v > node-root_dist.txt
 
 =head1 AUTHOR
 
@@ -166,7 +206,7 @@ Nick Youngblut <nyoungb2@illinois.edu>
 
 =head1 AVAILABILITY
 
-sharchaea.life.uiuc.edu:/home/git/
+sharchaea.life.uiuc.edu:/home/git/tree_edit/
 
 =head1 COPYRIGHT
 
