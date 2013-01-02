@@ -32,54 +32,118 @@ $abund_cut = 20 if ! $abund_cut;
 ### MAIN
 my $treeo = tree_io($tree_in, $format);
 my $habs_ref = load_habitat($habitat_in);
-$treeo = find_pops($treeo, $habs_ref);
+$treeo = find_pops($treeo, $habs_ref, $abund_cut);
 #print_node_ids($treeo, "true", "true");
-$habs_ref = filter_habs($habs_ref, $abund_cut);				# filtering by abundance
+#$habs_ref = filter_habs($habs_ref, $abund_cut);				# filtering by abundance
 exit;
 #get_leaf_branch_lengths($treeo);
 
 ### Subroutines
 sub find_pops{
-	my ($treeo, $habs_ref) = @_;
+	my ($treeo, $habs_ref, $abund_cut) = @_;
 	
-	my %skipped;
-	my %pop_nodes;
-	for my $node ($treeo->get_nodes){		# foreach internal node
-		next if $node->is_Leaf;
-		
-		# getting all leaves #
-		my @children;
-		for my $child ($node->get_all_Descendents){
-			next if ! $child->is_Leaf;
-			push(@children, $child);
-			}
-		
-		# getting all leaf habitats #
-		my %node_habs;
-		foreach my $child (@children){
-			if (! exists $$habs_ref{$child->id}){
-				if (! exists $skipped{$child->id}){
-					print STDERR " WARNING: ", $child->id, " not found in habitat file; skipping\n";
-					}
-				else{
-					$skipped{$child->id} = 1;
-					}
-				next;
-				}	
-			$node_habs{$$habs_ref{$child->id}}++;
-			}
-		
-		# filtering #
-		foreach my $key (keys %node_habs){
-			delete $node_habs{$key} if $node_habs{$key} < $abund_cut;
-			}
-		
-		# checking for monophyl; labeling all decendent nodes #
-		if(scalar keys %node_habs == 1){
-			
-			}
-		$pop_nodes{$node->
+	my $root = $treeo->get_root_node;
+	#my %groups;
+	#my $groups_ref = groups_of_ten($treeo, $root, \%groups);
+	
+	my %pops;
+	my $pops_ref = check_monophyl($root, $treeo, \%pops, $habs_ref, $abund_cut);
+	
+		#print Dumper $pops_ref; exit;
+	
+	}
+
+sub groups_of_ten{
+	my ($treeo, $node, $groups_ref) = @_;
+	
+	if(scalar $node->get_all_Descendents <= 20){
+		$node->id(scalar keys %$groups_ref);
+		$$groups_ref{$node->id} = 1;
 		}
+	else{
+		for my $child ($node->each_Descendent){
+			$groups_ref = groups_of_ten($treeo, $child, $groups_ref);
+			}
+		}
+	return $groups_ref;
+	}
+
+
+sub check_monophyl{
+	my ($node, $treeo, $pops_ref, $habs_ref, $abund_cut) = @_;
+	
+	# checking for monophyl #
+	my %node_habs;
+	for my $child ($node->get_all_Descendents){			# getting all leaves
+		next if ! $child->is_Leaf;
+		if(! exists $$habs_ref{$child->id}){
+			print STDERR " WARNING: ", $child->id, " was not found in habitat file; skipping\n";
+			next;
+			}
+		else{	
+			$node_habs{$$habs_ref{$child->id}}{"count"}++;
+			push(@{$node_habs{$$habs_ref{$child->id}}{"taxa"}}, $child->id);
+			}
+		}
+	
+	# filtering #
+	my $node_habs_sum = 0;
+	my @taxa;
+	foreach my $key (keys %node_habs){
+		if ($node_habs{$key}{"count"} < $abund_cut){
+			print STDERR "Filtering: ", join(",", @{$node_habs{$key}{"taxa"}}),"\n";
+			delete $node_habs{$key};
+			}
+		else{
+			$node_habs_sum += $node_habs{$key}{"count"};
+			push(@taxa, @{$node_habs{$key}{"taxa"}});
+			}
+		}
+
+	# if monophyl, note node; else continue down tree #
+	if(scalar keys %node_habs == 1){
+		# labeling node #
+		$node->id(scalar keys %$pops_ref);
+
+		# getting node characteristics #
+		$$pops_ref{$node->id}{"taxa_count"} = $node_habs_sum;			# number of taxa in population
+		$$pops_ref{$node->id}{"taxa"} = \@taxa;							# taxa in node
+		$$pops_ref{$node->id}{"root_dist"} = $node->depth;				# number of taxa in population
+		
+		}
+	else{					# continue down tree if not monophyletic
+		for my $child ($node->each_Descendent){
+			$pops_ref = check_monophyl($child, $treeo, $pops_ref, $habs_ref, $abund_cut);
+			}
+		}
+	return $pops_ref;
+	}
+
+sub check_monophyl_OLD{
+	my ($node, $habs_ref, $abund_cut) = @_;
+	
+	my %hab_cnt;
+	for my $child ($node->each_Descendent){
+		if(! $child->is_Leaf){		# if node
+			if($child->id){
+				$hab_cnt{$child->id}++; 		# getting habitat of node
+				}
+			else{							# getting all descendents
+				for my $node_child ($node->get_all_Descendents){
+				
+					}
+				}
+			} 
+		else{						# if leaf
+			if(! exists $$habs_ref{$child->id}){
+				print STDERR " WARNING: ", $child->id, " not found in habitat file\n";
+				}
+			else{
+				$hab_cnt{ $$habs_ref{$child->id} }++;
+				}
+			}
+		}
+	
 	}
 
 sub print_node_ids{
