@@ -84,8 +84,6 @@ sub find_pops{
 	my ($treeo, $habs_ref, $abund_cut) = @_;
 	
 	my $root = $treeo->get_root_node;
-	#my %groups;
-	#my $groups_ref = groups_of_ten($treeo, $root, \%groups);
 	
 	my %pops;
 	my $bi_cnt = 0;
