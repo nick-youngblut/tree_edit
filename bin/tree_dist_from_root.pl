@@ -15,7 +15,7 @@ pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 my ($verbose, $tree_in, $habitat_in, $full_in, $format);
 GetOptions(
 	   "tree=s" => \$tree_in,		# tree file
-	   "habitat=s" => \$habitat_in,	# habitat file (2column)
+	   #"habitat=s" => \$habitat_in,	# habitat file (2column)
 	   "full=s" => \$full_in,		# full file (from adaptML)
 	   "format=s" => \$format,		# tree format
 	   "verbose" => \$verbose,
@@ -30,13 +30,40 @@ $format = check_format($format);
 
 ### MAIN
 my $treeo = tree_io($tree_in, $format);
-my $habs_ref = load_habitat($habitat_in) if $habitat_in;
-$treeo = internal_node_label($treeo, $habs_ref);
+#my $habs_ref = load_habitat($habitat_in) if $habitat_in;
+my $full_ref = load_full_file($full_in);
 #print_node_ids($treeo, "true", "true");
 exit;
 #get_leaf_branch_lengths($treeo);
 
 ### Subroutines
+sub load_full_file{
+	my $full_in = shift;
+	
+	open IN, $full_in or die $!;
+	my %full;
+	my @labels;
+	while(<IN>){
+		chomp;
+		if(/^LABELS/){
+			@labels = split /,/;
+			}
+		elsif(/^COLORS/){ next; }
+		else{
+			next unless /\|/;		# must be a node
+			my @line = split /,/;
+			my @taxa = split /\|/, $line[0];
+			for my $i (2..$#line){
+				$full{$taxa[0]}{$taxa[1]} = $labels[$i-1]
+				}
+			}
+		}
+		
+	close IN;
+
+	print Dumper %full; exit;
+	}
+
 sub print_node_ids{
 	# error checking
 	my ($tree, $leaf, $int) = @_;
@@ -52,21 +79,6 @@ sub print_node_ids{
 				}
 			}
 		}
-	}
-
-sub internal_node_label{
-	# using tip labels to label internal nodes #
-	my ($treeo, $habs_ref) = @_;
-	my @leaf_names = keys %$habs_ref;
-	foreach my @nodes(
-		for my $ii (0..$#leaf_names){
-			next if $i >= $ii;
-			my $lca = $treeo->get_lca(-nodes => $leaf_names[$i], $leaf_names[$ii]);
-			print Dumper $lca; exit;
-			}
-		}
-		#exit;
-	#return $tree;
 	}
 
 sub check_format{
@@ -100,6 +112,8 @@ sub load_habitat{
 		die " ERROR: habitat file not formated correctly\n" if scalar @line != 2;
 		$habs{$line[0]} = $line[1];
 		}
+	close IN;	
+		
 	return \%habs;
 	}
 
