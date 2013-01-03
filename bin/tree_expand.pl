@@ -70,23 +70,10 @@ sub expand_taxa{
 		
 		# adding clonal replicate taxa (for each sample) #
 		die " ERROR: ", $leaf_id, " not found in count table\n" if ! exists $$count_ref{$leaf_id};
-		my $samp_cnt = 64;			 # naming
-		my $tojoin = "";			# naming
 		foreach my $samp (@{$$count_ref{$leaf_id}}){
-			$samp_cnt++;
-			
-			# adding clonal node #
-			#$anc->add_Descendent($anc->new(-branch_length => $leaf->branch_length));
-			
 			# adding clonal taxa #
-			$leaf->add_Descendent($leaf->new(-id => join("_", $samp, join("", $leaf_cnt, $tojoin, chr $samp_cnt)), 
+			$leaf->add_Descendent($leaf->new(-id => join("_", $samp, $leaf_cnt), 
 					-branch_length => 0));
-			
-			# naming counter (AA, AAA, etc) #
-			if($samp_cnt == 90){
-				$tojoin .= chr $samp_cnt;
-				$samp_cnt = 64;
-				}
 			
 			# renaming leaf #
 			$leaf->id("");
@@ -163,15 +150,21 @@ __END__
 
 =head1 NAME
 
-template.pl -- script template
+tree_expand.pl -- Replicate (add clonal taxa) to a tree.
 
 =head1 SYNOPSIS
 
-template.pl [options] < input > output
+tree_expand.pl -t -c [-f]
 
 =head2 options
 
 =over
+
+=item -t 	Tree file (newick | nexus)
+
+=item -c 	Count file (Mothur format)
+
+=item -f 	Tree file format. [newick]
 
 =item -v	Verbose output
 
@@ -181,24 +174,23 @@ template.pl [options] < input > output
 
 =head2 For more information:
 
-perldoc template.pl
+perldoc tree_expand.pl
 
 =head1 DESCRIPTION
 
-The flow of execution is roughly:
-   1) Step 1
-   2) Step 2
-   3) Step 3
+The script will duplicate taxa (clonal duplicates), in order to 
+have a representative from each environment in the tree. This is
+needed for AdaptML.
+
+=head2 Example:
+
+OTU1 is found in Sample1 & Sample2
+
+OTU1 would then be split in the tree to Sample1_1 Sample2_1
 
 =head1 EXAMPLES
 
-=head2 Usage method 1
-
-template.pl <read1.fastq> <read2.fastq> <output directory or basename>
-
-=head2 Usage method 2
-
-template.pl <library file> <output directory or basename>
+tree_expand.pl tree_expand.pl -t file.nwk -c file.count
 
 =head1 AUTHOR
 
@@ -206,7 +198,7 @@ Nick Youngblut <nyoungb2@illinois.edu>
 
 =head1 AVAILABILITY
 
-sharchaea.life.uiuc.edu:/home/git/
+sharchaea.life.uiuc.edu:/home/git/tree_edit/
 
 =head1 COPYRIGHT
 
