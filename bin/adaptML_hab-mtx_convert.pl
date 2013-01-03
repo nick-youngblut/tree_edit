@@ -13,7 +13,7 @@ pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 
 my ($verbose, $sum_bool);
 GetOptions(
-	   "sum" => \$sum_bool,
+	   "sum" => \$sum_bool,			# sum by label position
 	   "verbose" => \$verbose,
 	   "help|?" => \&pod2usage # Help
 	   );
@@ -136,7 +136,9 @@ adaptml_hab-mtx_convert.pl < habitat.matrix > habitat.mtx.txt
 
 =over
 
-=item -h	This help message
+=item -s  	Sum labels by position? [false]
+
+=item -h 	This help message
 
 =back
 
@@ -149,7 +151,7 @@ perldoc adaptml_hab-mtx_convert.pl
 Convert an AdaptML habitat matrix to a table for R plotting. The table is in 'long' format
 for easy plotting in R. The table is tab-delimited.
 
-=head2 3 Column output:
+=head2 3 (4 if '-s') Column output:
 
 =over
 
