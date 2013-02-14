@@ -65,6 +65,7 @@ sub write_pruned_count_file{
 	close OUT;	
 		
 	print STDERR " Pruned count file written: '$outfile'\n";
+	print STDERR "  Number of taxa in pruned count file: ", scalar keys %$count_r, "\n";
 	}
 
 sub call_prune_tree{
@@ -122,6 +123,8 @@ sub check_names{
 # checking names #
 	my ($treeo, $abund_r, $count_r) = @_;
 
+	my $count_rows = scalar keys %$count_r;
+
 	my %nodes = map{$_->id, 1} $treeo->get_leaf_nodes;	
 
 	my $prune_cnt = 0;
@@ -135,8 +138,10 @@ sub check_names{
 			$prune_cnt++ if $$abund_r{$taxon} eq "delete";
 			}
 		}
-		
-	print STDERR "\n Number of taxa to be pruned: $prune_cnt\n\n";
+	
+	print STDERR "\n Number of taxa in count file: $count_rows\n";
+	print STDERR " Number of leaves: ", scalar keys %nodes, "\n";
+	print STDERR " Number of taxa to be pruned: $prune_cnt\n";
 	}
 
 sub sum_count{
@@ -186,7 +191,7 @@ sub load_count{
 		$count{$line[0]} = [@line[1..$#line]];
 		}
 	close IN;
-		
+			
 		#print Dumper %count; exit;
 	return \%count, $header;			# returning taxa for pruning
 	}
