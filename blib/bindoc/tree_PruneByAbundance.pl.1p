@@ -133,7 +133,7 @@
 tree_PruneByAbundance.pl \-\- Prune tree by taxon abundances
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-tree_PruneByAbundance.pl \-t \-c [\-f] [\-x] [\-m] [\-a]
+tree_PruneByAbundance.pl \-t \-c [\-f] [\-x] [\-m] [\-a] [\-r]
 .SS "options"
 .IX Subsection "options"
 .IP "\-t" 4
@@ -154,6 +154,10 @@ Mothur-formatted count file? [\s-1FALSE\s0]
 .IP "\-a" 4
 .IX Item "-a"
 Abundance cutoff for pruning (>=). [5]
+.IP "\-r" 4
+.IX Item "-r"
+Regular expression for excluding certain taxa. (example: \-r \*(L"^methan\*(R").
+Capitaliztion invariant.
 .IP "\-v" 4
 .IX Item "-v"
 Verbose output

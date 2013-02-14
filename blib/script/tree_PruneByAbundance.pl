@@ -13,7 +13,7 @@ use List::Util qw/sum/;
 ### args/flags
 pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 
-my ($verbose, $tree_in, $tformat, $count_in, $count_header, $mothur);
+my ($verbose, $tree_in, $tformat, $count_in, $count_header, $mothur, $regex);
 my $abund_cut = 5;
 GetOptions(
 	   "tree=s" => \$tree_in,			# tree file
@@ -22,6 +22,7 @@ GetOptions(
 	   "xheader" => \$count_header,		# header in count table? [T]
 	   "mothur" => \$mothur,			# mothur formatted count file? [F]
 	   "abundance=i" => \$abund_cut, 	# abundance cutoff 
+	   "regex=s" => \$regex, 			# regex for exclusion on pruning 
 	   "verbose" => \$verbose,
 	   "help|?" => \&pod2usage # Help
 	   );
@@ -29,6 +30,7 @@ GetOptions(
 ### I/O error & defaults
 die " Provide a tree file (newick or nexus).\n" if ! $tree_in;
 $tformat = check_tree_format($tformat);
+$regex = qr/$regex/i if $regex;
 
 ### MAIN
 # load tree & count files #
@@ -36,7 +38,7 @@ my $treeo = tree_io($tree_in, $tformat);
 my ($count_r, $header) = load_count($count_in, $count_header, $mothur);
 
 # sum abundances #
-my $abund_r = sum_count($count_r, $abund_cut, $mothur);
+my $abund_r = sum_count($count_r, $abund_cut, $mothur, $regex);
 
 # checking taxon existence in tree #
 check_names($treeo, $abund_r, $count_r);
@@ -121,7 +123,7 @@ sub prune_by_abundance{
 
 sub check_names{
 # checking names #
-	my ($treeo, $abund_r, $count_r) = @_;
+	my ($treeo, $abund_r, $count_r, $regex) = @_;
 
 	my $count_rows = scalar keys %$count_r;
 
@@ -155,7 +157,10 @@ sub sum_count{
 		else{ $rowsum = sum( @{$$count_r{$row}} ); }
 		
 		
-		if($rowsum >= $abund_cut){
+		if($regex && $row =~ $regex){			# skipping if regex hits taxon
+			$abund{$row} = $row;
+			}
+		elsif($rowsum >= $abund_cut){
 			$abund{$row} = $row;
 			}
 		else{
@@ -227,7 +232,7 @@ tree_PruneByAbundance.pl -- Prune tree by taxon abundances
 
 =head1 SYNOPSIS
 
-tree_PruneByAbundance.pl -t -c [-f] [-x] [-m] [-a]
+tree_PruneByAbundance.pl -t -c [-f] [-x] [-m] [-a] [-r]
 
 =head2 options
 
@@ -256,6 +261,11 @@ Mothur-formatted count file? [FALSE]
 =item -a
 
 Abundance cutoff for pruning (>=). [5]
+
+=item -r
+
+Regular expression for excluding certain taxa. (example: -r "^methan").
+Capitaliztion invariant.
 
 =item -v
 

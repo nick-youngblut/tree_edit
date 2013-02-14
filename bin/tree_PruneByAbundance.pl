@@ -132,13 +132,17 @@ sub check_names{
 	my $prune_cnt = 0;
 	foreach my $taxon (keys %$abund_r){
 		if (! exists $nodes{$taxon}){
-			print STDERR " WARNING! not found in tree file: '$taxon'\n";
+			print STDERR " WARNING! in count file; not in tree file: '$taxon'\n";
 			delete $$abund_r{$taxon};			# removing from count file because taxon not in tree
 			delete $$count_r{$taxon};			# removing from count file because taxon not in tree
 			}
 		else{
 			$prune_cnt++ if $$abund_r{$taxon} eq "delete";
 			}
+		}
+		
+	foreach my $node (keys %nodes){
+		print STDERR " WARNING! in tree file; not in count file: '$node'\n";
 		}
 	
 	print STDERR "\n Number of taxa in count file: $count_rows\n";
