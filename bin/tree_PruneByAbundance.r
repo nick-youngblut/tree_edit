@@ -1,7 +1,4 @@
 #!/usr/bin/Rscript
-mod <- "10/27/12";
-version <- "0.3";
-author <- "Nick Youngblut";
 #--------------------- version log ---------------------#
 #
 #
@@ -78,6 +75,15 @@ for(i in 1:nrow(name.tbl)){
 }
 
 
+
+
 # writing tree #
 if(ext == ".nwk"){ write.tree(nwk, file=opt$outname) } else
 if(ext == ".tre"){ write.nexus(nwk, file=opt$outname) }
+
+msg <- paste(c("\n Pruned tree file written: ", opt$outname))
+message(msg)
+
+# trimming status #
+stat <- paste(c("  Number of leaves remaining: ", length(nwk$tip.label)))
+message(stat)
