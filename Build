@@ -11,7 +11,7 @@ sub magic_number_matches {
   open FH, '_build/magicnum' or return 0;
   my $filenum = <FH>;
   close FH;
-  return $filenum == 447804;
+  return $filenum == 117892;
 }
 
 my $progname;
@@ -39,6 +39,7 @@ BEGIN {
      '/opt/iCORN-v0.97',
      '/opt/RAST_api/lib',
      '/opt/RepeatMasker',
+     '/opt/mugsy/perllibs',
      '/usr/local/lib/perl/5.14.2',
      '/opt/RAST_api/lib'
     );

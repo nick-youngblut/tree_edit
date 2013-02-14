@@ -5,7 +5,7 @@ use Module::Build;
 
 opendir IN, "./bin/" or die $!;
 my @binfiles = readdir IN;
-my @binscripts = grep(/.pl$/, @binfiles);
+my @binscripts = grep(/.pl$|.r$/i, @binfiles);
 @binscripts = map{$_ = "./bin/" . $_} @binscripts;
 
 my $builder = Module::Build->new(

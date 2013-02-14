@@ -72,6 +72,7 @@ do{ my $x = [
                               '/opt/iCORN-v0.97/',
                               '/opt/RAST_api/lib/',
                               '/opt/RepeatMasker/',
+                              '/opt/mugsy/perllibs/',
                               '/usr/local/lib/perl/5.14.2/',
                               '/opt/RAST_api/lib'
                             ],
@@ -115,11 +116,13 @@ do{ my $x = [
                              './bin/tree_dist_from_root.pl',
                              './bin/tree_randomize_leaves.pl',
                              './bin/tree_expand.pl',
+                             './bin/tree_PruneByAbundance.r',
                              './bin/lca_finder.pl',
                              './bin/tree_brlen_mod.pl',
                              './bin/tree_attribute_edit.pl',
                              './bin/adaptML_hab-mtx_convert.pl',
-                             './bin/tree_cat.pl'
+                             './bin/tree_cat.pl',
+                             './bin/tree_PruneByAbundance.pl'
                            ],
          'build_script' => 'Build',
          'original_prefix' => {},
