@@ -10,7 +10,7 @@ my @binscripts = grep(/.pl$/, @binfiles);
 
 my $builder = Module::Build->new(
     module_name         => 'tree_edit',
-    license             => 'Perl_5',
+    license             => 'perl',
     dist_author         => q{Nick Youngblut <nyoungb2@illinois.edu>},
     dist_version_from   => 'lib/tree_edit.pm',
     release_status      => 'stable',

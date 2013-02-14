@@ -1,0 +1,5 @@
+do{ my $x = {
+       'tree_edit-*' => 1,
+       'blib' => 1
+     };
+$x; }
