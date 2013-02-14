@@ -98,10 +98,17 @@ sub check_names{
 
 	my %nodes = map{$_->id, 1} $treeo->get_leaf_nodes;	
 
+	my $prune_cnt = 0;
 	foreach my $taxon (keys %$count_r){
-		print STDERR " WARNING! not found in tree file: '$taxon'\n"
-			if ! exists $nodes{$taxon};
+		if (! exists $nodes{$taxon}){
+			print STDERR " WARNING! not found in tree file: '$taxon'\n";
+			}
+		else{
+			$prune_cnt++ if $$count_r{$taxon} eq "delete";
+			}
 		}
+		
+	print STDERR "\n Number of taxa to be pruned: $prune_cnt\n\n";
 	}
 
 sub load_count{

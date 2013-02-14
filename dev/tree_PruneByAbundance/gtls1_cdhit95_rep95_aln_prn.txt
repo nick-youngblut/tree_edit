@@ -1,352 +1,298 @@
-Methanobrevibacter_arboriphilus	Methanobrevibacter_arboriphilus
-gtl-s1_BB_8971	gtl-s1_BB_8971
-Methanomicrobium_mobile	Methanomicrobium_mobile
-Msarcina_mazei_LYC_mcrA	Msarcina_mazei_LYC_mcrA
-gtl-s1_YBM_8567	gtl-s1_YBM_8567
-gtl-s1_YBB_13179	gtl-s1_YBB_13179
-gtl-s1_YBM_15271	gtl-s1_YBM_15271
-gtl-s1_BB_15166	gtl-s1_BB_15166
-gtl-s1_YBB_367	gtl-s1_YBB_367
-gtl-s1_YBM_2183	gtl-s1_YBM_2183
-gtl-s1_YBB_8064	gtl-s1_YBB_8064
-gtl-s1_YBB_10928	gtl-s1_YBB_10928
-Msarcina_lacZ_7289_mcrA	Msarcina_lacZ_7289_mcrA
-gtl-s1_YBM_8707	gtl-s1_YBM_8707
-gtl-s1_YBM_1687	gtl-s1_YBM_1687
-gtl-s1_BB_11960	gtl-s1_BB_11960
-gtl-s1_YBM_9995	gtl-s1_YBM_9995
-gtl-s1_BB_6854	gtl-s1_BB_6854
-gtl-s1_BB_5926	gtl-s1_BB_5926
-Msarcina_siciliae_C2J_mcrA	Msarcina_siciliae_C2J_mcrA
-gtl-s1_YBM_7493	gtl-s1_YBM_7493
-gtl-s1_YBB_447	gtl-s1_YBB_447
-gtl-s1_YBM_4790	delete
-gtl-s1_YBB_153	gtl-s1_YBB_153
-gtl-s1_BB_9044	gtl-s1_BB_9044
-gtl-s1_BB_16543	gtl-s1_BB_16543
-Msarcina_barkeri_str_fusaro	Msarcina_barkeri_str_fusaro
-gtl-s1_BB_11871	gtl-s1_BB_11871
-gtl-s1_YBM_5441	gtl-s1_YBM_5441
-gtl-s1_BB_954	gtl-s1_BB_954
-gtl-s1_YBM_4421	gtl-s1_YBM_4421
-Methanosphaera_stadtmanae_DSM_3091	Methanosphaera_stadtmanae_DSM_3091
-gtl-s1_BB_6509	gtl-s1_BB_6509
-gtl-s1_BB_16232	gtl-s1_BB_16232
-gtl-s1_BB_13269	gtl-s1_BB_13269
-methanogenic_archaeon_SANAE	methanogenic_archaeon_SANAE
-gtl-s1_YBM_583	gtl-s1_YBM_583
-gtl-s1_BB_11774	gtl-s1_BB_11774
-Methanocorpusculum_parvum	Methanocorpusculum_parvum
-Methanothermobacter_thermautotrophicus_str_Delta_H	Methanothermobacter_thermautotrophicus_str_Delta_H
-gtl-s1_YBM_15862	gtl-s1_YBM_15862
-gtl-s1_YBM_13616	gtl-s1_YBM_13616
-gtl-s1_YBB_11576	gtl-s1_YBB_11576
-Methanocaldococcus_jannaschii_DSM_2661	Methanocaldococcus_jannaschii_DSM_2661
-gtl-s1_BB_16240	gtl-s1_BB_16240
-gtl-s1_BB_11663	delete
-gtl-s1_YBB_53	gtl-s1_YBB_53
-Msarcina_Kolk_mcrA	Msarcina_Kolk_mcrA
-gtl-s1_YBB_8450	gtl-s1_YBB_8450
-gtl-s1_YBB_4392	delete
-gtl-s1_BB_14275	gtl-s1_BB_14275
-gtl-s1_BB_13983	gtl-s1_BB_13983
-gtl-s1_YBB_10101	gtl-s1_YBB_10101
-gtl-s1_YBM_16135	delete
-gtl-s1_BB_3163	gtl-s1_BB_3163
-gtl-s1_YBM_2051	gtl-s1_YBM_2051
-gtl-s1_BB_1033	gtl-s1_BB_1033
-gtl-s1_YBB_15066	delete
-gtl-s1_YBM_4515	gtl-s1_YBM_4515
-gtl-s1_YBM_1393	gtl-s1_YBM_1393
-gtl-s1_YBM_9765	delete
-gtl-s1_YBB_657	gtl-s1_YBB_657
-gtl-s1_YBB_2778	gtl-s1_YBB_2778
-gtl-s1_YBB_4329	gtl-s1_YBB_4329
-gtl-s1_BB_10482	gtl-s1_BB_10482
-gtl-s1_YBM_9748	delete
-gtl-s1_YBM_6555	gtl-s1_YBM_6555
-gtl-s1_BB_14623	gtl-s1_BB_14623
-gtl-s1_YBB_13061	gtl-s1_YBB_13061
-gtl-s1_BB_16220	gtl-s1_BB_16220
-gtl-s1_BB_3406	gtl-s1_BB_3406
-gtl-s1_BB_14577	gtl-s1_BB_14577
-gtl-s1_BB_14227	gtl-s1_BB_14227
-gtl-s1_BB_10030	gtl-s1_BB_10030
-Msarcina_barkeri_fusaro_mcrA	Msarcina_barkeri_fusaro_mcrA
-gtl-s1_BB_2143	gtl-s1_BB_2143
-Methanotorris_igneus	Methanotorris_igneus
-Msarcina_bark227_mcrA	Msarcina_bark227_mcrA
-gtl-s1_YBM_11176	delete
-gtl-s1_YBM_640	gtl-s1_YBM_640
-gtl-s1_BB_5179	gtl-s1_BB_5179
-gtl-s1_BB_7184	gtl-s1_BB_7184
-gtl-s1_BB_1430	gtl-s1_BB_1430
-gtl-s1_YBM_2061	gtl-s1_YBM_2061
-gtl-s1_BB_4104	gtl-s1_BB_4104
-gtl-s1_YBM_2503	gtl-s1_YBM_2503
-gtl-s1_YBB_9768	gtl-s1_YBB_9768
-Methanolobus_bombayensis	Methanolobus_bombayensis
-gtl-s1_YBB_12088	delete
-gtl-s1_YBB_6444	gtl-s1_YBB_6444
-gtl-s1_BB_16076	gtl-s1_BB_16076
-gtl-s1_YBM_14674	gtl-s1_YBM_14674
-Msarcina_mazei_SarPi_mcrA	Msarcina_mazei_SarPi_mcrA
-gtl-s1_BB_6366	gtl-s1_BB_6366
-Methanococcoides_burtonii	Methanococcoides_burtonii
-gtl-s1_YBM_6209	gtl-s1_YBM_6209
-Msarcina_vacZ_mcrA	Msarcina_vacZ_mcrA
-gtl-s1_BB_8168	gtl-s1_BB_8168
-gtl-s1_BB_11513	gtl-s1_BB_11513
-gtl-s1_YBM_241	gtl-s1_YBM_241
-gtl-s1_BB_745	gtl-s1_BB_745
-gtl-s1_BB_1113	delete
-gtl-s1_BB_4786	delete
-Methanohalobium_evestigatum	Methanohalobium_evestigatum
-gtl-s1_YBM_13695	gtl-s1_YBM_13695
-Methanomicrobiaceae_strain_EBac	Methanomicrobiaceae_strain_EBac
-gtl-s1_BB_13541	gtl-s1_BB_13541
-gtl-s1_BB_16307	gtl-s1_BB_16307
-Methanococcus_maripaludis_C5	Methanococcus_maripaludis_C5
-gtl-s1_YBB_5199	gtl-s1_YBB_5199
-gtl-s1_BB_14059	gtl-s1_BB_14059
-gtl-s1_YBB_8165	gtl-s1_YBB_8165
-gtl-s1_BB_8499	delete
-gtl-s1_YBB_15452	gtl-s1_YBB_15452
-gtl-s1_YBB_13307	gtl-s1_YBB_13307
-gtl-s1_BB_5465	delete
-gtl-s1_YBM_212	gtl-s1_YBM_212
-gtl-s1_BB_558	gtl-s1_BB_558
-Methanolobus_oregonensis	Methanolobus_oregonensis
-gtl-s1_YBM_10603	gtl-s1_YBM_10603
-gtl-s1_BB_13380	gtl-s1_BB_13380
-gtl-s1_YBM_6925	gtl-s1_YBM_6925
-gtl-s1_YBB_3864	gtl-s1_YBB_3864
-gtl-s1_YBB_3756	gtl-s1_YBB_3756
-gtl-s1_YBM_16173	gtl-s1_YBM_16173
-Methanohalophilus_halophilus	Methanohalophilus_halophilus
-gtl-s1_YBM_15658	gtl-s1_YBM_15658
-gtl-s1_YBM_14065	gtl-s1_YBM_14065
-gtl-s1_BB_10548	gtl-s1_BB_10548
-gtl-s1_BB_13656	delete
-gtl-s1_BB_6791	gtl-s1_BB_6791
-gtl-s1_YBB_5275	gtl-s1_YBB_5275
-gtl-s1_YBB_14436	gtl-s1_YBB_14436
-gtl-s1_BB_1707	delete
-Candidatus_Methanoregula_boonei_6A8	Candidatus_Methanoregula_boonei_6A8
-gtl-s1_YBM_1058	delete
-gtl-s1_BB_2843	gtl-s1_BB_2843
-gtl-s1_BB_9201	gtl-s1_BB_9201
-Msarcina_mazei_C16_mcrA	Msarcina_mazei_C16_mcrA
-Msarcina_sicilliae_HI350_mcrA	Msarcina_sicilliae_HI350_mcrA
-Msarcina_bark_MS_mcrA	Msarcina_bark_MS_mcrA
-gtl-s1_YBB_11401	gtl-s1_YBB_11401
-gtl-s1_YBM_4078	gtl-s1_YBM_4078
-Msarcina_mazei_S-6_mcrA	Msarcina_mazei_S-6_mcrA
-gtl-s1_YBM_12558	delete
-gtl-s1_YBB_5025	delete
-gtl-s1_YBM_4699	gtl-s1_YBM_4699
-gtl-s1_YBB_4673	gtl-s1_YBB_4673
-gtl-s1_YBM_1737	gtl-s1_YBM_1737
-Msarcina_mazei_Go1_mcrA	Msarcina_mazei_Go1_mcrA
-gtl-s1_YBB_4873	gtl-s1_YBB_4873
-gtl-s1_YBB_15499	delete
-gtl-s1_BB_364	gtl-s1_BB_364
-Msarcina_therm_TM1_1825_mcrA	Msarcina_therm_TM1_1825_mcrA
-gtl-s1_YBB_2286	delete
-gtl-s1_BB_6694	gtl-s1_BB_6694
-gtl-s1_YBM_10471	gtl-s1_YBM_10471
-gtl-s1_BB_14556	gtl-s1_BB_14556
-gtl-s1_BB_15096	gtl-s1_BB_15096
-gtl-s1_BB_644	gtl-s1_BB_644
-gtl-s1_BB_2648	gtl-s1_BB_2648
-gtl-s1_YBM_11438	gtl-s1_YBM_11438
-gtl-s1_BB_16218	gtl-s1_BB_16218
-gtl-s1_BB_12180	gtl-s1_BB_12180
-gtl-s1_YBB_15619	gtl-s1_YBB_15619
-gtl-s1_BB_12957	gtl-s1_BB_12957
-gtl-s1_BB_4216	delete
-gtl-s1_YBM_9601	gtl-s1_YBM_9601
-gtl-s1_YBB_198	gtl-s1_YBB_198
-gtl-s1_BB_6460	gtl-s1_BB_6460
-gtl-s1_BB_14449	gtl-s1_BB_14449
-gtl-s1_BB_4245	gtl-s1_BB_4245
-gtl-s1_YBB_10596	gtl-s1_YBB_10596
-gtl-s1_BB_8973	delete
-gtl-s1_YBM_12496	gtl-s1_YBM_12496
-gtl-s1_YBB_2423	gtl-s1_YBB_2423
-gtl-s1_YBB_1945	gtl-s1_YBB_1945
-gtl-s1_YBB_15167	gtl-s1_YBB_15167
-gtl-s1_BB_7597	delete
-gtl-s1_YBB_4467	gtl-s1_YBB_4467
-gtl-s1_YBM_9486	delete
-gtl-s1_YBM_8956	delete
-gtl-s1_BB_9921	gtl-s1_BB_9921
-Methanocorpusculum_aggregans	Methanocorpusculum_aggregans
-gtl-s1_YBM_7823	gtl-s1_YBM_7823
-gtl-s1_YBB_507	delete
-gtl-s1_YBB_8612	gtl-s1_YBB_8612
-gtl-s1_BB_16584	gtl-s1_BB_16584
-gtl-s1_YBB_15621	gtl-s1_YBB_15621
-gtl-s1_YBB_13829	delete
-gtl-s1_BB_8846	gtl-s1_BB_8846
-Msarcina_lacZ_S_mcrA	Msarcina_lacZ_S_mcrA
-Msarcina_siciliae_T4.M_mcrA	Msarcina_siciliae_T4.M_mcrA
-gtl-s1_BB_256	gtl-s1_BB_256
-gtl-s1_BB_1571	gtl-s1_BB_1571
-gtl-s1_YBM_15056	delete
-gtl-s1_YBB_4836	gtl-s1_YBB_4836
-gtl-s1_YBM_12754	delete
-gtl-s1_BB_10589	gtl-s1_BB_10589
-gtl-s1_YBB_12634	delete
-gtl-s1_YBB_8383	gtl-s1_YBB_8383
-gtl-s1_YBM_12440	gtl-s1_YBM_12440
-gtl-s1_BB_11796	gtl-s1_BB_11796
-gtl-s1_YBM_4465	delete
-gtl-s1_YBM_4334	gtl-s1_YBM_4334
-gtl-s1_YBM_4826	gtl-s1_YBM_4826
-gtl-s1_YBB_1041	gtl-s1_YBB_1041
-gtl-s1_BB_89	gtl-s1_BB_89
-gtl-s1_YBM_2109	gtl-s1_YBM_2109
-gtl-s1_BB_8373	gtl-s1_BB_8373
-gtl-s1_BB_15585	delete
-gtl-s1_BB_9326	gtl-s1_BB_9326
-gtl-s1_YBB_10203	gtl-s1_YBB_10203
-gtl-s1_YBB_337	gtl-s1_YBB_337
-gtl-s1_YBB_736	delete
-Methanoculleus_bourgensis	Methanoculleus_bourgensis
-gtl-s1_BB_11680	delete
-gtl-s1_BB_7862	gtl-s1_BB_7862
-gtl-s1_YBM_872	gtl-s1_YBM_872
-gtl-s1_BB_15691	gtl-s1_BB_15691
-gtl-s1_YBB_6501	delete
-gtl-s1_BB_5325	delete
-gtl-s1_YBB_4844	gtl-s1_YBB_4844
-gtl-s1_YBB_9457	gtl-s1_YBB_9457
-gtl-s1_YBM_2567	gtl-s1_YBM_2567
-gtl-s1_YBB_2982	gtl-s1_YBB_2982
-gtl-s1_BB_700	gtl-s1_BB_700
-gtl-s1_YBB_15146	gtl-s1_YBB_15146
-gtl-s1_BB_7691	gtl-s1_BB_7691
-gtl-s1_YBB_15057	gtl-s1_YBB_15057
-gtl-s1_BB_14929	gtl-s1_BB_14929
-gtl-s1_BB_7488	delete
-gtl-s1_BB_12630	gtl-s1_BB_12630
-gtl-s1_YBB_9625	gtl-s1_YBB_9625
-Methanocorpusculum_labreanum_Z	Methanocorpusculum_labreanum_Z
-gtl-s1_YBM_5417	delete
-gtl-s1_BB_13480	gtl-s1_BB_13480
-gtl-s1_YBB_13472	gtl-s1_YBB_13472
-gtl-s1_BB_16029	gtl-s1_BB_16029
-gtl-s1_BB_12640	gtl-s1_BB_12640
-gtl-s1_YBB_3765	gtl-s1_YBB_3765
-gtl-s1_YBB_7837	gtl-s1_YBB_7837
-Methanococcus_maripaludis_S2	Methanococcus_maripaludis_S2
-gtl-s1_YBM_6282	gtl-s1_YBM_6282
-gtl-s1_YBB_12457	gtl-s1_YBB_12457
-gtl-s1_BB_3965	gtl-s1_BB_3965
-gtl-s1_YBM_238	gtl-s1_YBM_238
-Msarcina_napels_100_mcrA	Msarcina_napels_100_mcrA
-Msarcina_bark_Weis_mcrA	Msarcina_bark_Weis_mcrA
-gtl-s1_YBM_16067	delete
-Msarcina_mazei_TMA_mcrA	Msarcina_mazei_TMA_mcrA
-gtl-s1_YBB_11414	gtl-s1_YBB_11414
-gtl-s1_BB_13832	gtl-s1_BB_13832
-gtl-s1_BB_2652	gtl-s1_BB_2652
-Methanococcoides_methylutens	Methanococcoides_methylutens
-gtl-s1_BB_13429	delete
-gtl-s1_BB_3737	gtl-s1_BB_3737
-gtl-s1_YBB_5462	gtl-s1_YBB_5462
-gtl-s1_YBM_10087	gtl-s1_YBM_10087
-Methanobrevibacter_ruminantium	Methanobrevibacter_ruminantium
-gtl-s1_YBM_5434	delete
-gtl-s1_BB_2490	gtl-s1_BB_2490
-gtl-s1_BB_4256	gtl-s1_BB_4256
-gtl-s1_YBB_5030	gtl-s1_YBB_5030
-gtl-s1_BB_1286	gtl-s1_BB_1286
-gtl-s1_YBB_12823	gtl-s1_YBB_12823
-gtl-s1_BB_6826	gtl-s1_BB_6826
-gtl-s1_YBM_12850	gtl-s1_YBM_12850
-gtl-s1_YBB_8211	delete
-gtl-s1_BB_2134	gtl-s1_BB_2134
-gtl-s1_YBM_12560	gtl-s1_YBM_12560
-Msarcina_therm_TM1_sowers_mcrA	Msarcina_therm_TM1_sowers_mcrA
-gtl-s1_BB_5352	gtl-s1_BB_5352
-gtl-s1_YBB_12180	gtl-s1_YBB_12180
-gtl-s1_BB_10218	gtl-s1_BB_10218
-gtl-s1_YBB_12525	delete
-gtl-s1_YBM_14134	gtl-s1_YBM_14134
-gtl-s1_BB_468	delete
-gtl-s1_BB_15408	delete
-Msarcina_semesiae_MD1_mcrA	Msarcina_semesiae_MD1_mcrA
-gtl-s1_BB_7794	delete
-gtl-s1_YBB_13766	gtl-s1_YBB_13766
-gtl-s1_YBB_9220	delete
-gtl-s1_YBM_16140	delete
-gtl-s1_BB_10329	gtl-s1_BB_10329
-gtl-s1_YBM_12446	gtl-s1_YBM_12446
-gtl-s1_BB_6013	gtl-s1_BB_6013
-gtl-s1_YBM_11140	delete
-gtl-s1_YBM_9751	delete
-gtl-s1_YBM_2395	gtl-s1_YBM_2395
-gtl-s1_YBM_10141	delete
-gtl-s1_BB_706	gtl-s1_BB_706
-gtl-s1_YBB_7987	gtl-s1_YBB_7987
-gtl-s1_BB_1186	gtl-s1_BB_1186
-gtl-s1_BB_6613	gtl-s1_BB_6613
-gtl-s1_BB_277	gtl-s1_BB_277
-gtl-s1_BB_12704	gtl-s1_BB_12704
-gtl-s1_YBB_7242	delete
-Methanosalsum_zhilinae	Methanosalsum_zhilinae
-gtl-s1_BB_12023	gtl-s1_BB_12023
-gtl-s1_YBB_10495	delete
-gtl-s1_YBM_1658	gtl-s1_YBM_1658
-gtl-s1_YBB_12811	delete
-gtl-s1_YBM_6518	gtl-s1_YBM_6518
-gtl-s1_YBB_5514	gtl-s1_YBB_5514
-gtl-s1_YBB_14929	gtl-s1_YBB_14929
-gtl-s1_YBM_2475	gtl-s1_YBM_2475
-gtl-s1_YBM_3814	delete
-Methanothermococcus_thermolithotrophicus	Methanothermococcus_thermolithotrophicus
-gtl-s1_BB_4247	gtl-s1_BB_4247
-gtl-s1_YBB_93	gtl-s1_YBB_93
-gtl-s1_YBB_4799	gtl-s1_YBB_4799
-gtl-s1_BB_543	gtl-s1_BB_543
-gtl-s1_YBB_14058	gtl-s1_YBB_14058
-gtl-s1_YBB_3684	gtl-s1_YBB_3684
-gtl-s1_YBM_1508	gtl-s1_YBM_1508
-Msarcina_acetivorans_C2A_mcrA	Msarcina_acetivorans_C2A_mcrA
-Msarcina_therm_CHTI55_mcrA	Msarcina_therm_CHTI55_mcrA
-Methanofollis_liminatans	Methanofollis_liminatans
-gtl-s1_BB_10879	gtl-s1_BB_10879
-gtl-s1_YBB_2164	gtl-s1_YBB_2164
-gtl-s1_YBB_1681	delete
-gtl-s1_YBM_1145	gtl-s1_YBM_1145
-Msarcina_MTP4_mcrA	Msarcina_MTP4_mcrA
-gtl-s1_YBB_343	gtl-s1_YBB_343
-gtl-s1_BB_15832	gtl-s1_BB_15832
-gtl-s1_YBB_6743	gtl-s1_YBB_6743
-gtl-s1_BB_13873	gtl-s1_BB_13873
-gtl-s1_YBB_3494	gtl-s1_YBB_3494
-gtl-s1_YBM_3696	gtl-s1_YBM_3696
-gtl-s1_YBM_15964	gtl-s1_YBM_15964
-gtl-s1_YBB_12657	gtl-s1_YBB_12657
-Methanosaeta_concilii	Methanosaeta_concilii
-Msarcina_calensis_cali_mcrA	Msarcina_calensis_cali_mcrA
-gtl-s1_BB_11137	gtl-s1_BB_11137
-gtl-s1_YBM_1355	gtl-s1_YBM_1355
-gtl-s1_YBM_2722	delete
-gtl-s1_YBB_4709	delete
-Methanohalophilus_mahii	Methanohalophilus_mahii
-gtl-s1_YBB_15652	delete
-gtl-s1_YBM_159	gtl-s1_YBM_159
-gtl-s1_YBM_3142	gtl-s1_YBM_3142
-Mvorans_hollandica_WWM590_mcrA	Mvorans_hollandica_WWM590_mcrA
-gtl-s1_BB_15719	delete
-gtl-s1_BB_836	gtl-s1_BB_836
-gtl-s1_BB_2535	gtl-s1_BB_2535
-Msarcina_mazei_WWM610_mcrA	Msarcina_mazei_WWM610_mcrA
-gtl-s1_YBM_4102	delete
-gtl-s1_BB_14106	delete
-Msarcina_WH1_mcrA	Msarcina_WH1_mcrA
-gtl-s1_BB_15067	gtl-s1_BB_15067
-Msarcina_bark3_mcrA	Msarcina_bark3_mcrA
+		gtl-s1_BB_	gtl-s1_YBB_	gtl-s1_YBM_
+gtl-s1_BB_8971	287	1	1
+gtl-s1_YBM_8567	7	3	3
+gtl-s1_YBB_13179	0	5	0
+gtl-s1_YBM_15271	0	0	7
+gtl-s1_BB_15166	22	2	0
+gtl-s1_YBB_367	0	17	0
+gtl-s1_YBM_2183	0	0	61
+gtl-s1_YBB_8064	0	18	0
+gtl-s1_YBB_10928	0	116	0
+gtl-s1_YBM_8707	0	0	594
+gtl-s1_YBM_1687	0	0	33
+gtl-s1_BB_11960	10	0	0
+gtl-s1_YBM_9995	0	82	212
+gtl-s1_BB_6854	5	0	0
+gtl-s1_BB_5926	5	0	0
+gtl-s1_YBM_7493	0	135	1156
+gtl-s1_YBB_447	0	21	0
+gtl-s1_YBM_4790	0	0	1
+gtl-s1_YBB_153	0	6	0
+gtl-s1_BB_9044	304	0	21
+gtl-s1_BB_16543	7	0	0
+gtl-s1_BB_11871	20	0	0
+gtl-s1_YBM_5441	36	17	11
+gtl-s1_BB_954	56	0	0
+gtl-s1_YBM_4421	0	18	5
+Methanosphaera_stadtmanae_DSM_3091	0	0	0	20	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+gtl-s1_BB_6509	8	1	1
+gtl-s1_BB_16232	13	0	0
+gtl-s1_BB_13269	1	4	0
+gtl-s1_YBM_583	0	0	25
+gtl-s1_BB_11774	11	0	14
+Methanothermobacter_thermautotrophicus_str_Delta_H	0	0	0	20	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+gtl-s1_YBM_15862	0	0	18
+gtl-s1_YBM_13616	32	58	59
+gtl-s1_YBB_11576	0	21	0
+Methanocaldococcus_jannaschii_DSM_2661	0	0	0	20	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+gtl-s1_BB_16240	20	0	0
+gtl-s1_BB_11663	1	0	0
+gtl-s1_YBB_53	3	11	1
+gtl-s1_YBB_8450	0	22	0
+gtl-s1_YBB_4392	0	2	0
+gtl-s1_BB_14275	14	0	0
+gtl-s1_BB_13983	350	15	20
+gtl-s1_YBB_10101	0	17	0
+gtl-s1_YBM_16135	0	0	1
+gtl-s1_BB_3163	865	0	0
+gtl-s1_YBM_2051	0	1	9
+gtl-s1_BB_1033	12	0	0
+gtl-s1_YBB_15066	0	4	0
+gtl-s1_YBM_4515	0	22	21
+gtl-s1_YBM_1393	0	0	6
+gtl-s1_YBM_9765	0	1	1
+gtl-s1_YBB_657	0	182	6
+gtl-s1_YBB_2778	0	45	0
+gtl-s1_YBB_4329	0	22	0
+gtl-s1_BB_10482	19	0	0
+gtl-s1_YBM_9748	0	0	3
+gtl-s1_YBM_6555	0	189	559
+gtl-s1_BB_14623	6	0	0
+gtl-s1_YBB_13061	292	395	148
+gtl-s1_BB_16220	41	0	0
+gtl-s1_BB_3406	63	0	0
+gtl-s1_BB_14577	11	0	0
+gtl-s1_BB_14227	31	0	20
+gtl-s1_BB_10030	9	0	0
+gtl-s1_BB_2143	23	23	0
+gtl-s1_YBM_11176	0	0	2
+gtl-s1_YBM_640	8	0	36
+gtl-s1_BB_5179	35	0	0
+gtl-s1_BB_7184	215	0	6
+gtl-s1_BB_1430	11	0	0
+gtl-s1_YBM_2061	0	0	27
+gtl-s1_BB_4104	16	25	0
+gtl-s1_YBM_2503	0	0	7
+gtl-s1_YBB_9768	0	14	0
+gtl-s1_YBB_12088	0	1	0
+gtl-s1_YBB_6444	84	746	79
+gtl-s1_BB_16076	42	0	0
+gtl-s1_YBM_14674	193	0	6
+gtl-s1_BB_6366	271	0	16
+gtl-s1_YBM_6209	0	0	21
+gtl-s1_BB_8168	15	0	0
+gtl-s1_BB_11513	8	0	0
+gtl-s1_YBM_241	38	1	35
+gtl-s1_BB_745	104	24	195
+gtl-s1_BB_1113	1	0	0
+gtl-s1_BB_4786	1	0	0
+gtl-s1_YBM_13695	13	38	5
+gtl-s1_BB_16307	1	0	19
+Methanococcus_maripaludis_C5	0	0	0	20	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+gtl-s1_YBB_5199	0	157	0
+gtl-s1_BB_14059	13	99	0
+gtl-s1_YBB_8165	0	365	0
+gtl-s1_YBB_15452	0	17	0
+gtl-s1_YBB_13307	0	7	5
+gtl-s1_BB_5465	1	0	0
+gtl-s1_YBM_212	0	0	100
+gtl-s1_BB_558	5	0	0
+gtl-s1_YBM_10603	0	21	126
+gtl-s1_BB_13380	283	0	0
+gtl-s1_YBM_6925	21	5	32
+gtl-s1_YBB_3864	0	89	1
+gtl-s1_YBB_3756	0	26	0
+gtl-s1_YBM_16173	34	0	6
+gtl-s1_YBM_15658	11	51	34
+gtl-s1_YBM_14065	0	0	6
+gtl-s1_BB_10548	309	0	38
+gtl-s1_BB_13656	4	0	0
+gtl-s1_BB_6791	22	13	0
+gtl-s1_YBB_5275	0	15	0
+gtl-s1_YBB_14436	17	63	44
+gtl-s1_BB_1707	4	0	0
+gtl-s1_YBM_1058	0	0	1
+gtl-s1_BB_2843	35	33	0
+gtl-s1_BB_9201	11	0	0
+gtl-s1_YBB_11401	0	637	26
+gtl-s1_YBM_4078	0	0	103
+gtl-s1_YBM_12558	0	0	2
+gtl-s1_YBB_5025	0	1	0
+gtl-s1_YBM_4699	0	0	6
+gtl-s1_YBB_4673	7	44	81
+gtl-s1_YBM_1737	0	53	35
+gtl-s1_YBB_4873	7	7	0
+gtl-s1_YBB_15499	0	2	1
+gtl-s1_BB_364	19	0	0
+gtl-s1_YBB_2286	0	4	0
+gtl-s1_BB_6694	36	16	12
+gtl-s1_YBM_10471	4	0	42
+gtl-s1_BB_14556	13	0	0
+gtl-s1_BB_15096	46	0	0
+gtl-s1_BB_644	4	1	0
+gtl-s1_BB_2648	1440	600	425
+gtl-s1_YBM_11438	63	8	23
+gtl-s1_BB_16218	25	0	0
+gtl-s1_BB_12180	112	0	0
+gtl-s1_YBB_15619	0	36	9
+gtl-s1_BB_12957	1096	5	4
+gtl-s1_BB_4216	2	0	0
+gtl-s1_YBM_9601	261	96	498
+gtl-s1_YBB_198	1	8	0
+gtl-s1_BB_6460	112	0	0
+gtl-s1_BB_14449	56	0	0
+gtl-s1_BB_4245	36	0	0
+gtl-s1_YBB_10596	0	24	0
+gtl-s1_BB_8973	1	0	0
+gtl-s1_YBM_12496	0	0	38
+gtl-s1_YBB_2423	0	19	0
+gtl-s1_YBB_1945	0	119	0
+gtl-s1_YBB_15167	0	145	12
+gtl-s1_BB_7597	1	0	0
+gtl-s1_YBB_4467	0	13	0
+gtl-s1_YBM_9486	0	0	2
+gtl-s1_YBM_8956	2	0	2
+gtl-s1_BB_9921	492	0	0
+gtl-s1_YBM_7823	0	0	40
+gtl-s1_YBB_507	0	3	0
+gtl-s1_YBB_8612	3	35	23
+gtl-s1_BB_16584	21	0	0
+gtl-s1_YBB_15621	0	26	0
+gtl-s1_YBB_13829	0	2	0
+gtl-s1_BB_8846	19	0	0
+gtl-s1_BB_256	6	0	0
+gtl-s1_BB_1571	17	0	0
+gtl-s1_YBM_15056	0	0	1
+gtl-s1_YBB_4836	0	63	0
+gtl-s1_YBM_12754	0	0	1
+gtl-s1_BB_10589	20	18	0
+gtl-s1_YBB_12634	0	4	0
+gtl-s1_YBB_8383	0	151	0
+gtl-s1_YBM_12440	594	162	603
+gtl-s1_BB_11796	45	0	0
+gtl-s1_YBM_4465	0	0	1
+gtl-s1_YBM_4334	0	0	11
+gtl-s1_YBM_4826	0	279	65
+gtl-s1_YBB_1041	0	106	0
+gtl-s1_BB_89	25	0	0
+gtl-s1_YBM_2109	0	0	7
+gtl-s1_BB_8373	5	8	0
+gtl-s1_BB_15585	1	0	0
+gtl-s1_BB_9326	41	0	0
+gtl-s1_YBB_10203	0	851	25
+gtl-s1_YBB_337	7	8	0
+gtl-s1_YBB_736	0	3	0
+gtl-s1_BB_11680	3	0	0
+gtl-s1_BB_7862	29	0	0
+gtl-s1_YBM_872	21	0	109
+gtl-s1_BB_15691	9	0	0
+gtl-s1_YBB_6501	0	3	0
+gtl-s1_BB_5325	1	0	0
+gtl-s1_YBB_4844	0	9	0
+gtl-s1_YBB_9457	38	16	0
+gtl-s1_YBM_2567	0	34	107
+gtl-s1_YBB_2982	13	36	50
+gtl-s1_BB_700	1381	1	191
+gtl-s1_YBB_15146	0	7	0
+gtl-s1_BB_7691	5	0	0
+gtl-s1_YBB_15057	0	78	0
+gtl-s1_BB_14929	6	0	0
+gtl-s1_BB_7488	3	0	0
+gtl-s1_BB_12630	34	0	0
+gtl-s1_YBB_9625	0	157	277
+Methanocorpusculum_labreanum_Z	0	0	0	20	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+gtl-s1_YBM_5417	0	0	1
+gtl-s1_BB_13480	829	0	0
+gtl-s1_YBB_13472	0	29	0
+gtl-s1_BB_16029	24	0	0
+gtl-s1_BB_12640	7	0	0
+gtl-s1_YBB_3765	0	6	0
+gtl-s1_YBB_7837	0	29	0
+gtl-s1_YBM_6282	0	0	13
+gtl-s1_YBB_12457	0	22	128
+gtl-s1_BB_3965	1025	75	6
+gtl-s1_YBM_238	0	26	62
+gtl-s1_YBM_16067	0	0	2
+gtl-s1_YBB_11414	0	12	0
+gtl-s1_BB_13832	58	0	0
+gtl-s1_BB_2652	16	0	0
+gtl-s1_BB_13429	2	0	0
+gtl-s1_BB_3737	28	5	0
+gtl-s1_YBB_5462	0	7	0
+gtl-s1_YBM_10087	26	0	266
+gtl-s1_YBM_5434	0	0	1
+gtl-s1_BB_2490	460	0	0
+gtl-s1_BB_4256	607	0	0
+gtl-s1_YBB_5030	0	44	0
+gtl-s1_BB_1286	16	0	0
+gtl-s1_YBB_12823	0	6	0
+gtl-s1_BB_6826	21	109	14
+gtl-s1_YBM_12850	0	5	2
+gtl-s1_YBB_8211	0	3	1
+gtl-s1_BB_2134	10	0	0
+gtl-s1_YBM_12560	2	4	5
+gtl-s1_BB_5352	7	0	0
+gtl-s1_YBB_12180	0	578	16
+gtl-s1_BB_10218	6	0	0
+gtl-s1_YBB_12525	0	1	0
+gtl-s1_YBM_14134	75	3701	6618
+gtl-s1_BB_468	2	0	0
+gtl-s1_BB_7794	2	0	0
+gtl-s1_YBB_13766	0	63	0
+gtl-s1_YBB_9220	0	1	0
+gtl-s1_YBM_16140	0	0	1
+gtl-s1_BB_10329	13	0	0
+gtl-s1_YBM_12446	0	11	12
+gtl-s1_BB_6013	2	0	6
+gtl-s1_YBM_11140	0	0	1
+gtl-s1_YBM_9751	0	0	1
+gtl-s1_YBM_2395	0	0	12
+gtl-s1_YBM_10141	0	0	3
+gtl-s1_BB_706	7	0	0
+gtl-s1_YBB_7987	0	86	0
+gtl-s1_BB_1186	10	23	0
+gtl-s1_BB_6613	50	0	0
+gtl-s1_BB_277	31	0	0
+gtl-s1_BB_12704	813	96	320
+gtl-s1_YBB_7242	0	1	0
+gtl-s1_BB_12023	173	56	2
+gtl-s1_YBB_10495	0	1	1
+gtl-s1_YBM_1658	0	0	6
+gtl-s1_YBB_12811	0	3	0
+gtl-s1_YBM_6518	0	0	10
+gtl-s1_YBB_5514	0	13	0
+gtl-s1_YBB_14929	58	112	25
+gtl-s1_YBM_2475	0	0	5
+gtl-s1_YBM_3814	0	0	2
+gtl-s1_BB_4247	50	0	0
+gtl-s1_YBB_93	0	16	0
+gtl-s1_YBB_4799	0	50	0
+gtl-s1_BB_543	6	0	0
+gtl-s1_YBB_14058	0	12	0
+gtl-s1_YBB_3684	0	12	0
+gtl-s1_YBM_1508	29	0	6
+gtl-s1_BB_10879	13	0	0
+gtl-s1_YBB_2164	0	22	0
+gtl-s1_YBB_1681	0	4	0
+gtl-s1_YBM_1145	0	1	10
+gtl-s1_YBB_343	0	11	0
+gtl-s1_BB_15832	8	0	0
+gtl-s1_YBB_6743	0	63	15
+gtl-s1_BB_13873	12	7	4
+gtl-s1_YBB_3494	0	433	0
+gtl-s1_YBM_3696	0	0	5
+gtl-s1_YBM_15964	0	0	11
+gtl-s1_YBB_12657	129	1678	632
+gtl-s1_BB_11137	1174	104	703
+gtl-s1_YBM_1355	0	11	3
+gtl-s1_YBM_2722	0	0	1
+gtl-s1_YBB_4709	0	3	0
+gtl-s1_YBB_15652	0	1	0
+gtl-s1_YBM_159	0	0	15
+gtl-s1_YBM_3142	30	485	444
+gtl-s1_BB_15719	3	0	0
+gtl-s1_BB_836	47	0	0
+gtl-s1_BB_2535	10	0	0
+gtl-s1_YBM_4102	0	0	2
+gtl-s1_BB_14106	3	0	0
+gtl-s1_BB_15067	9	0	0

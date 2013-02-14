@@ -31,23 +31,49 @@ die " Provide a tree file (newick or nexus).\n" if ! $tree_in;
 $tformat = check_tree_format($tformat);
 
 ### MAIN
+# load tree & count files #
 my $treeo = tree_io($tree_in, $tformat);
-my $count_r = load_count($count_in, $count_header, $abund_cut, $mothur);
-check_names($treeo, $count_r);
-my $prune_file = write_prune_list($count_in, $count_r);
-call_prune_tree($tree_in, $prune_file);
+my ($count_r, $header) = load_count($count_in, $count_header, $mothur);
+
+# sum abundances #
+my $abund_r = sum_count($count_r, $abund_cut, $mothur);
+
+# checking taxon existence in tree #
+check_names($treeo, $abund_r, $count_r);
+
+# writing out prune list for R script & calling script #
+my $prune_file = write_prune_list($count_in, $abund_r);			
+call_prune_tree($tree_in, $prune_file);							# calling R script
+
+# writting out pruned count file #
+write_pruned_count_file($count_r, $count_in, $header);
 
 #$treeo = prune_by_abundance($treeo, $count_r);
 #tree_write($treeo, $tree_in);
 
 ### Subroutines
+sub write_pruned_count_file{
+	my ($count_r, $count_in, $header) = @_;
+	
+	(my $outfile = $count_in) =~ s/\.[^.]+$|$/_prn.txt/;
+	open OUT, ">$outfile" or die $!;
+	
+	print OUT $header, "\n" if $header;
+	foreach my $row (keys %$count_r){
+		print OUT join("\t", $row, @{$$count_r{$row}}), "\n";
+		}
+	close OUT;	
+		
+	print STDERR " Pruned count file written: '$outfile'\n";
+	}
+
 sub call_prune_tree{
 # calling prune_tree.r #
 	my ($tree_in, $prune_file) = @_;
 	
 #	my $cmd = "Rscript ../../bin/tree_PruneByAbundance.r -t $tree_in -n $prune_file";
 	my $cmd = "tree_PruneByAbundance.r -t $tree_in -n $prune_file";
-	print STDERR " $cmd\n";
+	print STDERR "\n$cmd\n" if $verbose;
 	system($cmd);
 	
 	}
@@ -94,55 +120,75 @@ sub prune_by_abundance{
 
 sub check_names{
 # checking names #
-	my ($treeo, $count_r) = @_;
+	my ($treeo, $abund_r, $count_r) = @_;
 
 	my %nodes = map{$_->id, 1} $treeo->get_leaf_nodes;	
 
 	my $prune_cnt = 0;
-	foreach my $taxon (keys %$count_r){
+	foreach my $taxon (keys %$abund_r){
 		if (! exists $nodes{$taxon}){
 			print STDERR " WARNING! not found in tree file: '$taxon'\n";
+			delete $$abund_r{$taxon};			# removing from count file because taxon not in tree
+			delete $$count_r{$taxon};			# removing from count file because taxon not in tree
 			}
 		else{
-			$prune_cnt++ if $$count_r{$taxon} eq "delete";
+			$prune_cnt++ if $$abund_r{$taxon} eq "delete";
 			}
 		}
 		
 	print STDERR "\n Number of taxa to be pruned: $prune_cnt\n\n";
 	}
 
+sub sum_count{
+# summing abundances in count file #
+	my ($count_r, $abund_cut, $mothur) = @_;
+	
+	my %abund;
+	foreach my $row (keys %$count_r){
+		my $rowsum;
+		if($mothur){ $rowsum = sum(@{$$count_r{$row}}[1..$#{$$count_r{$row}}]); }
+		else{ $rowsum = sum( @{$$count_r{$row}} ); }
+		
+		
+		if($rowsum >= $abund_cut){
+			$abund{$row} = $row;
+			}
+		else{
+			$abund{$row} = "delete";
+			}
+		}
+		
+		#print Dumper %abund; exit;
+	return \%abund;
+	}
+
 sub load_count{
 # loading count file #
 # 
-	my ($count_in, $count_header, $abund_cut, $mothur) = @_;
+	my ($count_in, $count_header, $mothur) = @_;
 	open IN, $count_in or die $!;
 	
 	my %count;
+	my $header;
 	while(<IN>){
 		chomp;
-		next if $.==1 && ! $count_header && ! $mothur;
+		
+		# header #
+		if ($.==1 && ! $count_header && ! $mothur){
+			$header = $_;
+			next;
+			}
 		
 		my @line = split /\t/;
 		die " ERROR: the count file must be at least 2 columns (rownames, count)\n"
 			if scalar @line < 2;
-		
-		my $rowsum;
-		if($mothur){ $rowsum = sum(@line[2..$#line]); }
-		else{ $rowsum = sum(@line[1..$#line]); }
-		
-		#next if $rowsum >= $abund_cut; 			# not including in pruning
-		
-		if($rowsum >= $abund_cut){
-			$count{$line[0]} = $line[0]; 
-			}
-		else{
-			$count{$line[0]} = "delete";
-			}
+			
+		$count{$line[0]} = [@line[1..$#line]];
 		}
 	close IN;
 		
 		#print Dumper %count; exit;
-	return \%count;			# returning taxa for pruning
+	return \%count, $header;			# returning taxa for pruning
 	}
 
 sub tree_io{
