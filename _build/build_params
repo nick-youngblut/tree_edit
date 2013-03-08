@@ -110,8 +110,11 @@ do{ my $x = [
          'quiet' => undef,
          'extra_compiler_flags' => [],
          'script_files' => [
+                             './bin/tree_get_names.r',
+                             './bin/tree_brlen_transform_OLD.pl',
                              './bin/tree_add_attribute.pl',
                              './bin/adaptML_get_pop.pl',
+                             './bin/tree_brlen_transform.pl',
                              './bin/adaptML_niche_transition.pl',
                              './bin/tree_dist_from_root.pl',
                              './bin/tree_randomize_leaves.pl',
