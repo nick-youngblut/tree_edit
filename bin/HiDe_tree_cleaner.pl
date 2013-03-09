@@ -60,18 +60,26 @@ sub clean_tree{
 	my $out = new Bio::TreeIO(-file => ">>$outfile", -format => "newick");
 	
 	# cleaning trees #
+	my $tree_cnt = 0;
 	while (my $treeo = $treeio->next_tree){
 		$treeo = edit_leaf_labels($treeo, $nameI_r);
 		$treeo = remove_node_labels($treeo);
 		$treeo = remove_bootstrap($treeo);
 		$treeo = remove_branch_length($treeo);
 		$treeo = check_tree_cleaning($treeo) if $verbose;
-		
 		$out->write_tree($treeo);
+		$tree_cnt++;
 		}
 	
 	# removing all colons (from branch lengths #
 	`perl -pi -e 's/://g; s/;/;\n/g' $outfile`;	
+	
+	# calling HiDe_clean_trees.r #
+	my $cmd = "HiDe_clean_trees.r -t $outfile";
+	$cmd .= " -s" if $outfile eq "species.newick";		# species flag if species
+	$cmd .= " -m" if $tree_cnt == 1;						# turning on multi-tree flag in R script
+	print STDERR "CMD: $cmd\n";
+	`$cmd`;
 	
 	print STDERR "...Cleaned tree written: $outfile\n";
 	}
@@ -123,6 +131,8 @@ sub HiDe_out_change_names{
 	}
 
 ### Subroutines
+# names #
+
 sub load_name_index{
 	my ($index_in) = @_;
 	open IN, $index_in or die $!;
@@ -190,6 +200,20 @@ sub check_names{
 	print STDERR "...names match!\n";
 	
 	return [keys %names];
+	}
+
+# tree editting #
+
+sub root_tree{
+# rooting tree if not rooted #
+	my ($treeo) = @_;
+	if(! $treeo->get_root_node->id){
+		for my $node ($treeo->get_leaf_nodes){
+			$treeo->reroot($node);			# re-rooting on first leaf node
+			last;
+			}
+		}
+	return $treeo; 
 	}
 
 sub remove_branch_length{
