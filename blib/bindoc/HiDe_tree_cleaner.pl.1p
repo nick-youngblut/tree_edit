@@ -124,47 +124,77 @@
 .\" ========================================================================
 .\"
 .IX Title "HIDE_TREE_CLEANER 1"
-.TH HIDE_TREE_CLEANER 1 "2013-03-08" "perl v5.14.2" "User Contributed Perl Documentation"
+.TH HIDE_TREE_CLEANER 1 "2013-03-09" "perl v5.14.2" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
 .nh
 .SH "NAME"
-template.pl \-\- script template
+HiDe_tree_cleaner.pl \-\- Cleaning trees for HiDe analysis (score.lua)
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-template.pl [options] < input > output
+.SS "Pre-HiDe"
+.IX Subsection "Pre-HiDe"
+HiDe_tree_cleaner.pl \-s \-g [\-f] [\-v]
+.SS "Post-HiDe"
+.IX Subsection "Post-HiDe"
+HiDe_tree_cleaner.pl \-i \-o
 .SS "options"
 .IX Subsection "options"
+.IP "\-s 	Species tree (newick or nexus)." 4
+.IX Item "-s 	Species tree (newick or nexus)."
+.PD 0
+.IP "\-g 	>=1 gene/LCB tree (newick or nexus)." 4
+.IX Item "-g 	>=1 gene/LCB tree (newick or nexus)."
+.IP "\-f 	Format of trees (newick or nexus). [newick]" 4
+.IX Item "-f 	Format of trees (newick or nexus). [newick]"
+.IP "\-i 	Index file." 4
+.IX Item "-i 	Index file."
+.IP "\-o 	score.lua output." 4
+.IX Item "-o 	score.lua output."
 .IP "\-v	Verbose output" 4
 .IX Item "-v	Verbose output"
-.PD 0
 .IP "\-h	This help message" 4
 .IX Item "-h	This help message"
 .PD
 .SS "For more information:"
 .IX Subsection "For more information:"
-perldoc template.pl
+perldoc HiDe_tree_cleaner.pl
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-The flow of execution is roughly:
-   1) Step 1
-   2) Step 2
-   3) Step 3
+HiDe (eg score.lua) requires very simple trees for input.
+This script removes:
+.IP "\(bu" 4
+Branch lengths
+.IP "\(bu" 4
+Internal node labels
+.IP "\(bu" 4
+Bootstrap values
+.PP
+It also coververts all leaf names to numbers. The index is saved to \*(L"*_NI.txt\*(R"
+.PP
+Leaf names must match among species and gene trees!
+.SS "Requires:"
+.IX Subsection "Requires:"
+.IP "\(bu" 4
+tree_get_names.pl
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
-.SS "Usage method 1"
-.IX Subsection "Usage method 1"
-template.pl <read1.fastq> <read2.fastq> <output directory or basename>
-.SS "Usage method 2"
-.IX Subsection "Usage method 2"
-template.pl <library file> <output directory or basename>
+.SS "Usage: pre-HiDe"
+.IX Subsection "Usage: pre-HiDe"
+HiDe_tree_cleaner.pl \-s species.nwk \-g gene*.newick
+.SS "Usage: HiDe"
+.IX Subsection "Usage: HiDe"
+score.lua . 80 > score.lua_out.txt
+.SS "Usage: post-HiDe"
+.IX Subsection "Usage: post-HiDe"
+HiDe_tree_cleaner.pl \-o score.lua_out.txt \-i species_NI.txt
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 Nick Youngblut <nyoungb2@illinois.edu>
 .SH "AVAILABILITY"
 .IX Header "AVAILABILITY"
-sharchaea.life.uiuc.edu:/home/git/
+sharchaea.life.uiuc.edu:/home/git/tree_edit/
 .SH "COPYRIGHT"
 .IX Header "COPYRIGHT"
 Copyright 2010, 2011
