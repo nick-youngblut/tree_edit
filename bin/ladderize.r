@@ -27,6 +27,7 @@ option_list <- list(
 	make_option(c("-t", "--tree"), type="character", help="Tree file"),
 	make_option(c("-f", "--format"), type="character", default="newick", help="Tree file format (newick or nexus)"),
 	make_option(c("-o", "--outname"), type="character", help="Output file name. [default: modified input file name]"),
+	make_option(c("-m", "--multi"), action="store_true", default=FALSE, help="Multiple trees in file? [FALSE]"),
 	make_option(c("-v", "--verbose"), action="store_false", default=TRUE, help="Print extra output")
 	)
 # get command line options, if help option encountered print help and exit, # otherwise if options not found on command line then set defaults, 
@@ -49,9 +50,17 @@ if(is.null(opt$outname)){ opt$outname <- ext.edit(opt$tree, paste(c("_lad", ext)
 
 
 ### data processing
+# reading #
 if(ext == ".nwk"){ tree <- read.tree(opt$tree) } else
 if(ext == ".tre"){ tree <- read.nexus(opt$tree) }
-tree <- ladderize(tree)
+
+# ladderizing
+if(opt$multi==TRUE){ 
+	tree <- lapply(tree, ladderize)
+	tree <- do.call(c.phylo, tree) } else
+	{ tree <- ladderize(tree) }
+
+# writing tree #
 if(ext == ".nwk"){ write.tree(tree, file=opt$outname) } else
 if(ext == ".tre"){ write.nexus(tree, file=opt$outname) }
 
