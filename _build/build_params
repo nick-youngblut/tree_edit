@@ -127,7 +127,8 @@ do{ my $x = [
                              './bin/tree_attribute_edit.pl',
                              './bin/adaptML_hab-mtx_convert.pl',
                              './bin/tree_cat.pl',
-                             './bin/tree_PruneByAbundance.pl'
+                             './bin/tree_PruneByAbundance.pl',
+                             './bin/HiDe_clean_trees.r'
                            ],
          'build_script' => 'Build',
          'original_prefix' => {},

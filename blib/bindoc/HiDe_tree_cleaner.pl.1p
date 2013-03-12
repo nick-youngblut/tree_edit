@@ -178,6 +178,8 @@ Leaf names must match among species and gene trees!
 .IX Subsection "Requires:"
 .IP "\(bu" 4
 tree_get_names.pl
+.IP "\(bu" 4
+HiDe_tree_cleaner.r
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
 .SS "Usage: pre-HiDe"

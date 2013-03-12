@@ -345,6 +345,8 @@ Leaf names must match among species and gene trees!
 
 =item * 	tree_get_names.pl
 
+=item * 	HiDe_tree_cleaner.r
+
 =back
 
 =head1 EXAMPLES
