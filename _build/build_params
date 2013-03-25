@@ -124,6 +124,7 @@ do{ my $x = [
                              './bin/lca_finder.pl',
                              './bin/tree_get_names.pl',
                              './bin/tree_brlen_mod.pl',
+                             './bin/ladderize.r',
                              './bin/tree_attribute_edit.pl',
                              './bin/adaptML_hab-mtx_convert.pl',
                              './bin/tree_cat.pl',
