@@ -41,7 +41,6 @@ my $color_r = load_color_range($color_in) if $color_in;
 my $treeo = tree_io($tree_in, $tformat);
 
 # collapsing tips #
-#root2tips($treeo, $treeo->get_root_node(), $brlen_cut, $count_r, $meta_r);
 collapse_tips_brlen($treeo, $brlen_cut, $count_r, $meta_r, $regex, $color_r);
 
 # writing modified tree #
@@ -50,8 +49,25 @@ tree_write($treeo, $tree_in);
 # writing metadata #
 write_metadata($meta_r,$meta_in) if $meta_in;
 write_color_range($color_r, $color_in) if $color_in;
+write_count($count_r, $count_in) if $count_in;
+
 
 ### Subroutines
+sub write_count{
+# writing metadata #
+	my ($count_r, $count_in) = @_;
+	
+	(my $count_out = $count_in) =~ s/\.[^\.]+$|$/_br-col.txt/;
+	open OUT, ">$count_out" or die $!;
+	print OUT join("\t", @{$count_r->{"HEADER"}{"HEADER"}}), "\n";
+	foreach my $taxon (sort keys %{$count_r->{"BODY"}} ){
+		print OUT join("\t", $taxon, @{$count_r->{"BODY"}{$taxon}}), "\n";
+		}
+	close OUT;
+
+	print STDERR " Count file written: '$count_out'\n";
+	}
+
 sub write_color_range{
 # writting color range #
 	my ($color_r, $color_in) = @_;
@@ -92,32 +108,6 @@ sub tree_write{
 	$out->write_tree($treeo);
 	print STDERR " Newick tree file written: '$outfile'\n";
 
-	}
-
-sub root2tips{
-# moving from the root to the tips #
-	my $treeo = shift;
-	my $anc = shift;
-
-
-	# starting w/ root #
-	#$anc = $tree->get_root_node() unless $anc;
-	
-	# I/O #
-	die " ERROR: no ancestor!\n" unless $anc;
-	
-
-	# if max length to tip < brlen collapse #
-	if($anc->height < $brlen_cut){
-		print Dumper "here"; exit;
-		collapse_tips_brlen($treeo, $anc, @_);
-		}
-	else{ 	# else: next node #
-		for	my $child ($anc->each_Descendent){
-			next if $child->is_Leaf;
-			root2tips($treeo, $anc, @_);
-			}
-		}
 	}
 
 sub collapse_tips_brlen{
@@ -177,6 +167,24 @@ sub collapse_tips_brlen{
 		}
 	}
 
+sub sum_count{
+# summing values in count file for collapsed clades #
+	my ($count_r, $rm_list_r, $col_node_name) = @_;
+	
+	# summing #
+	my @sums;
+	foreach my $taxon (@$rm_list_r){
+		die " ERROR: $taxon not found in the count file!\n"
+			unless exists $count_r->{$taxon};
+		for my $i (0..$#{$count_r->{"BODY"}{$taxon}}){
+			$sums[$i] += ${$count_r->{"BODY"}{$taxon}}[$i];
+			}
+		delete $count_r->{"BODY"}{$taxon};
+		}
+		
+	$count_r->{"BODY"}{$col_node_name} = \@sums;	
+	}
+
 sub sum_color_range{
 # pruning color range; replacing with random line from deleted #
 	my ($color_r, $rm_list_r, $col_node_name) = @_;
@@ -211,21 +219,6 @@ sub sum_meta{
 	$meta_r->{"BODY"}{$col_node_name} = \@sums;
 	
 		#print Dumper $meta_r->{"BODY"}; 
-	}
-
-sub collapse_tips_brlen_OLD{
-# collapsing tips based on branch length #
-	my ($treeo, $node, $brlen_cut, $count_r, $meta_r) = @_;
-			
-		#print Dumper " here"; exit;	
-			
-	for my $child ( $node->each_Descendent ){
-		my $brlen = $treeo->distance(-nodes => [$node, $child]);
-		#print Dumper $brlen; 
-		if( ! $brlen || $brlen < $brlen_cut){
-			$treeo->remove_Node($child);			
-			}
-		}
 	}
 
 sub tree_io{
@@ -285,31 +278,26 @@ sub load_metadata{
 
 sub load_count{
 # loading count file #
-# 
-	my ($count_in, $count_header, $mothur) = @_;
+	my ($count_in) = @_;
 	open IN, $count_in or die $!;
 	
 	my %count;
-	my $header;
 	while(<IN>){
 		chomp;
-		
-		# header #
-		if ($.==1 && ! $count_header && ! $mothur){
-			$header = $_;
-			next;
-			}
+		next if /^\s*$/;
 		
 		my @line = split /\t/;
 		die " ERROR: the count file must be at least 2 columns (rownames, count)\n"
 			if scalar @line < 2;
 			
-		$count{$line[0]} = [@line[1..$#line]];
+		# header #
+		if($. == 1){ $count{"HEADER"}{"HEADER"} = \@line; }
+		else{ $count{$line[0]}{"BODY"} = [@line[1..$#line]]; }
 		}
 	close IN;
 			
 		#print Dumper %count; exit;
-	return \%count, $header;			# returning taxa for pruning
+	return \%count;			# returning taxa for pruning
 	}
 
 sub check_tree_format{
@@ -328,15 +316,49 @@ __END__
 
 =head1 NAME
 
-template.pl -- script template
+tree_collapse_tips.pl -- collapsing tips by a branch length cutoff
 
 =head1 SYNOPSIS
 
-template.pl [options] < input > output
+tree_collapse_tips.pl [flags]
 
-=head2 options
+=head2 require flags
 
 =over
+
+=item -t
+
+Tree file (newick or nexus).
+
+=back
+
+=head2 optional flags
+
+=over
+
+=item -format
+
+Tree file format (newick or nexus). [newick]
+
+=item -length
+
+Branch length cutoff. [< 0]
+
+=item -count
+
+Count file in Mothur format
+
+=item -meta
+
+Metadata file in ITOL format
+
+=item -color
+
+Color file in ITOL format
+
+=item -regex
+
+Regular expression for excluding taxa from being collapsed.
 
 =item -v	Verbose output
 
@@ -346,24 +368,35 @@ template.pl [options] < input > output
 
 =head2 For more information:
 
-perldoc template.pl
+perldoc tree_collapse_tips.pl
 
 =head1 DESCRIPTION
 
-The flow of execution is roughly:
-   1) Step 1
-   2) Step 2
-   3) Step 3
+Collapse branches in a tree that have a branch length of < (-length)
+from the ancestral node.
+
+Collapsed nodes are labeled as: "collapsed-nodeID"_"number_taxa_collapsed"
+
+If any metadata files are provided (count, ITOL-metadata, color), 
+the taxon labels are updated and the abundances are summed. A random 
+taxon in a collapsed clade will be used for the color info if a
+color file is provided.
+
+Output file names are based on input file names ("*br-col*")
+
+=head2 WARNING
+
+'-count' flag not fully tested!
 
 =head1 EXAMPLES
 
-=head2 Usage method 1
+=head2 Usage: with a metadata file
 
-template.pl <read1.fastq> <read2.fastq> <output directory or basename>
+tree_collapse_tips.pl -t tree.nwk -meta meta.txt 
 
-=head2 Usage method 2
+=head2 Usage: with a metadata file
 
-template.pl <library file> <output directory or basename>
+tree_collapse_tips.pl -t tree.nwk -count count.txt
 
 =head1 AUTHOR
 
@@ -371,7 +404,7 @@ Nick Youngblut <nyoungb2@illinois.edu>
 
 =head1 AVAILABILITY
 
-sharchaea.life.uiuc.edu:/home/git/
+sharchaea.life.uiuc.edu:/home/git/tree_edit/
 
 =head1 COPYRIGHT
 
