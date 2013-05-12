@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "TREE_COLLAPSE_TIPS 1"
-.TH TREE_COLLAPSE_TIPS 1 "2013-04-18" "perl v5.14.2" "User Contributed Perl Documentation"
+.TH TREE_COLLAPSE_TIPS 1 "2013-04-22" "perl v5.14.2" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -159,6 +159,9 @@ Color file in \s-1ITOL\s0 format
 .IP "\-regex" 4
 .IX Item "-regex"
 Regular expression for excluding taxa from being collapsed.
+.IP "\-branch" 4
+.IX Item "-branch"
+Write out all branch lengths (internal nodes to most distant decendent).
 .IP "\-v	Verbose output" 4
 .IX Item "-v	Verbose output"
 .PD 0
@@ -186,11 +189,14 @@ Output file names are based on input file names (\*(L"*br\-col*\*(R")
 \&'\-count' flag not fully tested!
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
-.SS "Usage: with a metadata file"
-.IX Subsection "Usage: with a metadata file"
+.SS "Getting branch length distribution"
+.IX Subsection "Getting branch length distribution"
+tree_collapse_tips.pl \-t tree.nwk \-branch
+.SS "Collapse tree with a metadata file"
+.IX Subsection "Collapse tree with a metadata file"
 tree_collapse_tips.pl \-t tree.nwk \-meta meta.txt
-.SS "Usage: with a metadata file"
-.IX Subsection "Usage: with a metadata file"
+.SS "Collapse tree with a count file"
+.IX Subsection "Collapse tree with a count file"
 tree_collapse_tips.pl \-t tree.nwk \-count count.txt
 .SH "AUTHOR"
 .IX Header "AUTHOR"

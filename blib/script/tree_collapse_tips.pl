@@ -12,7 +12,7 @@ use Bio::TreeIO;
 ### args/flags
 pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 
-my ($verbose, $tree_in, $tformat, $count_in, $meta_in, $regex, $color_in);
+my ($verbose, $tree_in, $tformat, $count_in, $meta_in, $regex, $color_in, $brlen_write);
 my $brlen_cut = 0;
 GetOptions(
 	   "tree=s" => \$tree_in,			# tree file
@@ -22,6 +22,7 @@ GetOptions(
 	   "regex=s" => \$regex, 
 	   "meta=s" => \$meta_in,
 	   "length=f" => \$brlen_cut, 
+	   "branch" => \$brlen_write, 		# write out all brlens
 	   "verbose" => \$verbose,
 	   "help|?" => \&pod2usage # Help
 	   );
@@ -39,6 +40,9 @@ my $color_r = load_color_range($color_in) if $color_in;
 
 # loading tree #
 my $treeo = tree_io($tree_in, $tformat);
+
+# writing br-lengths #
+write_brlen($treeo) if $brlen_write;
 
 # collapsing tips #
 collapse_tips_brlen($treeo, $brlen_cut, $count_r, $meta_r, $regex, $color_r);
@@ -110,6 +114,17 @@ sub tree_write{
 
 	}
 
+sub write_brlen{
+# writing brlens of all nodes #
+	my ($treeo) = @_;
+	for my $node ($treeo->get_nodes){
+		next if $node->is_Leaf;					# no collapsign of leaves directly
+		print $node->height, "\n";
+		}
+
+	exit;
+	}
+
 sub collapse_tips_brlen{
 # collapsing tips based on branch length #
 	my ($treeo, $brlen_cut, $count_r, $meta_r, $regex, $color_r) = @_;
@@ -125,7 +140,7 @@ sub collapse_tips_brlen{
 			# removing leaf nodes 1st #
 			for my $child ( $node->each_Descendent ){
 				next unless $child->is_Leaf;
-				next if $child->id =~ /$regex/;		# skipping if match
+				next if $regex && $child->id =~ /$regex/;		# skipping if match
 				
 				push(@rm_list, $child->id);
 				
@@ -160,7 +175,7 @@ sub collapse_tips_brlen{
 				}
 		
 			# editing metadata #
-			#sum_count($count_r, \@rm_list, $col_node_name) if $count_r;
+			sum_count($count_r, \@rm_list, $col_node_name) if $count_r;
 			sum_meta($meta_r, \@rm_list, $col_node_name) if $meta_r;
 			sum_color_range($color_r, \@rm_list, $col_node_name) if $color_r;
 			}
@@ -175,14 +190,14 @@ sub sum_count{
 	my @sums;
 	foreach my $taxon (@$rm_list_r){
 		die " ERROR: $taxon not found in the count file!\n"
-			unless exists $count_r->{$taxon};
+			unless exists $count_r->{"BODY"}{$taxon};
 		for my $i (0..$#{$count_r->{"BODY"}{$taxon}}){
 			$sums[$i] += ${$count_r->{"BODY"}{$taxon}}[$i];
 			}
 		delete $count_r->{"BODY"}{$taxon};
 		}
 		
-	$count_r->{"BODY"}{$col_node_name} = \@sums;	
+	$count_r->{"BODY"}{$col_node_name} = \@sums;
 	}
 
 sub sum_color_range{
@@ -292,7 +307,7 @@ sub load_count{
 			
 		# header #
 		if($. == 1){ $count{"HEADER"}{"HEADER"} = \@line; }
-		else{ $count{$line[0]}{"BODY"} = [@line[1..$#line]]; }
+		else{ $count{"BODY"}{$line[0]} = [@line[1..$#line]]; }
 		}
 	close IN;
 			
@@ -360,6 +375,10 @@ Color file in ITOL format
 
 Regular expression for excluding taxa from being collapsed.
 
+=item -branch
+
+Write out all branch lengths (internal nodes to most distant decendent).
+
 =item -v	Verbose output
 
 =item -h	This help message
@@ -390,11 +409,15 @@ Output file names are based on input file names ("*br-col*")
 
 =head1 EXAMPLES
 
-=head2 Usage: with a metadata file
+=head2 Getting branch length distribution
+
+tree_collapse_tips.pl -t tree.nwk -branch
+
+=head2 Collapse tree with a metadata file
 
 tree_collapse_tips.pl -t tree.nwk -meta meta.txt 
 
-=head2 Usage: with a metadata file
+=head2 Collapse tree with a count file
 
 tree_collapse_tips.pl -t tree.nwk -count count.txt
 
