@@ -4,6 +4,7 @@
 use strict;
 use warnings;
 use Data::Dumper;
+use Pod::Usage;
 use Getopt::Long;
 use File::Spec;
 use Bio::TreeIO;
@@ -206,20 +207,33 @@ tree_edit_leaves.pl -t -n [-f] [-o] [-v] > editted_tree
 
 =over
 
-=item -t 	Tree file (nexus or newick)
-(nexus or newick). [newick]
+=item -tree
 
-=item -f 	Tree file format 
+Tree file (nexus or newick). [newick]
 
-=item -g 	Get leaf names and quit? [FALSE]
+=item -format
 
-=item -b 	Bootstrap trees (if multi-tree file)? [TRUE]
+Tree file format 
 
-=item -n 	Name file; 2 columns: old_name, new_name (or 'delete')
+=item -get
 
-=item -v	Verbose output
+Get leaf names and quit? [FALSE]
 
-=item -h	This help message
+=item -bootstrap
+
+Bootstrap trees (if multi-tree file)? [TRUE]
+
+=item -name
+
+Name file; 2 columns: old_name, new_name (or 'delete')
+
+=item -verbose
+
+Verbose output
+
+=item -help
+
+This help message
 
 =back
 
