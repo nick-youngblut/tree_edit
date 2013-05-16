@@ -52,7 +52,7 @@ sub clean_tree{
 	my ($gene_in, $tformat, $nameI_r, $outfile) = @_;
 	
 	# I/O #
-	($outfile = $gene_in) =~ s/\.[^\.]+$|$/_cln.newick/ unless $outfile;
+	($outfile = $gene_in) =~ s/\.[^\.]{,6}$|$/_cln.newick/ unless $outfile;
 	unlink $outfile if -e $outfile;
 	
 	my $treeio = Bio::TreeIO -> new(-file => $gene_in,
