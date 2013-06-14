@@ -110,6 +110,7 @@ do{ my $x = [
          'quiet' => undef,
          'script_files' => [
                              './bin/tree_get_names.r',
+                             './bin/tree_multi2di.r',
                              './bin/tree_brlen_transform_OLD.pl',
                              './bin/tree_add_attribute.pl',
                              './bin/adaptML_get_pop.pl',
