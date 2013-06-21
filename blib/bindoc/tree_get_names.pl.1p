@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "TREE_GET_NAMES 1"
-.TH TREE_GET_NAMES 1 "2013-03-09" "perl v5.14.2" "User Contributed Perl Documentation"
+.TH TREE_GET_NAMES 1 "2013-06-21" "perl v5.14.2" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -133,7 +133,7 @@
 tree_get_names.pl \-\- get leaf names from a newick/nexus tree file
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-tree_get_names.pl \-t [\-f] [\-m]  > names.txt
+tree_get_names.pl \-t [\-f] [\-m] [\-l]  > names.txt
 .SS "options"
 .IX Subsection "options"
 .IP "\-t 	Tree file." 4
@@ -143,6 +143,8 @@ tree_get_names.pl \-t [\-f] [\-m]  > names.txt
 .IX Item "-f 	Format (newick | nexus). [newick]"
 .IP "\-m 	Multiple trees. [\s-1FALSE\s0]" 4
 .IX Item "-m 	Multiple trees. [FALSE]"
+.IP "\-l 	Just the clade of an \s-1LCA\s0 (2 taxon names required)." 4
+.IX Item "-l 	Just the clade of an LCA (2 taxon names required)."
 .IP "\-h	This help message" 4
 .IX Item "-h	This help message"
 .PD
@@ -158,6 +160,9 @@ used unless the '\-m' flag is used, which will count the
 number of trees that each name appears in and that count 
 will be written as a second column (good for checking that concatentated
 trees all have the same names.
+.PP
+Use '\-l' to write just the names of a particular clade. The clade
+is defined by the \s-1LCA\s0 of the 2 taxa provide for '\-l'
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
 .SS "Usage: standard"
@@ -166,6 +171,9 @@ tree_get_names.pl \-t file.nwk > names.txt
 .SS "Usage: count of name prevalence among trees in file"
 .IX Subsection "Usage: count of name prevalence among trees in file"
 tree_get_names.pl \-t file.nwk \-multi > names.txt
+.SS "Usage: get names of a clade"
+.IX Subsection "Usage: get names of a clade"
+tree_get_names.pl \-t file.nwk \-l monkey human > clade_names.txt
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 Nick Youngblut <nyoungb2@illinois.edu>

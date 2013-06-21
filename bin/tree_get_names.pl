@@ -17,7 +17,7 @@ GetOptions(
 	   "tree=s" => \$tree_in,
 	   "format=s" => \$format,
 	   "multi" => \$multi,
-	   "lca=s{2,2}" => \@lca,
+	   "lca=s{2,}" => \@lca,
 	   "verbose" => \$verbose,
 	   "help|?" => \&pod2usage # Help
 	   );
@@ -31,12 +31,18 @@ my $treeio = Bio::TreeIO -> new(-file => $tree_in,
 my %names;
 for my $treeo ($treeio->next_tree){
 	if(@lca){		
+		# getting node objects #
+		my @lca_nodes;
+		foreach my $q (@lca){
+			my $node = $treeo->find_node($q);
+			die " ERROR: $q not found in tree!\n"
+				unless $node;
+			push(@lca_nodes, $node);
+			}
+		
 		# getting lca of interest #
-		my $lca = $treeo->get_lca(
-			[( $treeo->find_node($lca[0]), 
-			   $treeo->find_node($lca[1]) )]
-			);
-		die " ERROR: LCA for $lca[0] & $lca[1] not found in tree!\n"
+		my $lca = $treeo->get_lca(@lca_nodes);
+		die " ERROR: no LCA found in tree!\n"
 			unless $lca;
 		
 		# loading extant taxa of lca #
@@ -99,7 +105,7 @@ tree_get_names.pl -t [-f] [-m] [-l]  > names.txt
 
 =item -m 	Multiple trees. [FALSE]
 
-=item -l 	Just the clade of an LCA (2 taxon names required).
+=item -l 	Just the clade of an LCA (>=2 taxon names required).
 
 =item -h	This help message
 
@@ -120,7 +126,7 @@ will be written as a second column (good for checking that concatentated
 trees all have the same names.
 
 Use '-l' to write just the names of a particular clade. The clade
-is defined by the LCA of the 2 taxa provide for '-l'
+is defined by the LCA of the >=2 taxa arguments provide for '-l'
 
 =head1 EXAMPLES
 
