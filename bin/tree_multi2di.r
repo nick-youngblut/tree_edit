@@ -55,7 +55,7 @@ if(ext == ".tre"){ tree <- read.nexus(opt$tree) }
 if(opt$multi==TRUE){ 
 	tree <- lapply(tree, multi2di)
 	tree <- do.call(c.phylo, tree) } else
-	{ tree <- ladderize(multi2di) }
+	{ tree <- ladderize(multi2di(tree)) }
 
 # writing tree #
 if(ext == ".nwk"){ write.tree(tree, file=opt$outname) } else
