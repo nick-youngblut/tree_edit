@@ -143,8 +143,8 @@ tree_get_names.pl \-t [\-f] [\-m] [\-l]  > names.txt
 .IX Item "-f 	Format (newick | nexus). [newick]"
 .IP "\-m 	Multiple trees. [\s-1FALSE\s0]" 4
 .IX Item "-m 	Multiple trees. [FALSE]"
-.IP "\-l 	Just the clade of an \s-1LCA\s0 (2 taxon names required)." 4
-.IX Item "-l 	Just the clade of an LCA (2 taxon names required)."
+.IP "\-l 	Just the clade of an \s-1LCA\s0 (>=2 taxon names required)." 4
+.IX Item "-l 	Just the clade of an LCA (>=2 taxon names required)."
 .IP "\-h	This help message" 4
 .IX Item "-h	This help message"
 .PD
@@ -162,7 +162,7 @@ will be written as a second column (good for checking that concatentated
 trees all have the same names.
 .PP
 Use '\-l' to write just the names of a particular clade. The clade
-is defined by the \s-1LCA\s0 of the 2 taxa provide for '\-l'
+is defined by the \s-1LCA\s0 of the >=2 taxa arguments provide for '\-l'
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
 .SS "Usage: standard"
