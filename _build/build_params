@@ -115,6 +115,7 @@ do{ my $x = [
                              './bin/tree_add_attribute.pl',
                              './bin/adaptML_get_pop.pl',
                              './bin/tree_brlen_transform.pl',
+                             './bin/tree_makeCOGMetadata.pl',
                              './bin/adaptML_niche_transition.pl',
                              './bin/tree_rm_brlen.r',
                              './bin/tree_dist_from_root.pl',
