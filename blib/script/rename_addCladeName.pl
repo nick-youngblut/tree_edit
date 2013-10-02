@@ -134,36 +134,6 @@ sub make_name_clade_index{
 	}
 
 sub load_taxon_names{
-# loading names from tree; using nw_display #
-	my $taxa_in = shift;
-	
-	open PIPE, "perl -p -e 's/[)]\\d+/)/g' $taxa_in | nw_display -S - |" or die $!;
-	
-	my %names;
-	my @names;
-	while(<PIPE>){
-		chomp;
-		next if /^\s*$/;
-		next unless $. % 2; 	# odd line numbers
-		s/.+[|+]//;
-		s/^ +| +$//g;
-		s/ /_/g;
-		
-		print STDERR " WARNING: $_ found multiple times in names list!\n"
-		if exists $names{$_};
-		$names{$_} = $.;
-		push @names, $_;
-		}
-	close PIPE;
-	
-	die " ERROR: no taxon names provided!\n"
-		unless @names;
-		
-		#print Dumper @names; exit;
-	return \@names;
-	}
-
-sub load_taxon_names_OLD{
 # loading names 
 	my $taxa_in = shift;
 	open IN, $taxa_in or die $!;
@@ -197,7 +167,7 @@ rename_addCladeName.pl -- appending clade names to organism names or as a last c
 
 =head1 SYNOPSIS
 
-cat (table or other file) | rename_addCladeName.pl [flags] -t tree.nwk > clades_appended_file
+cat (table or other file) | rename_addCladeName.pl [flags] -t <(nw_labels -I tree.nwk) > clades_appended_file
 
 =head2 Required flags
 
@@ -209,7 +179,7 @@ File containing list of taxa names.
 
 =item -range  <int>
 
-Ranges delimiting clades as orderd by tree (index by 1; see DESCRIPTION)
+Ranges delimiting clades in taxa name list (index by 1; see DESCRIPTION)
 
 =back
 
@@ -254,18 +224,17 @@ Add clade names to taxa names in a tree file, table, or other file.
 
 =head2 -range
 
-The range should designate a set of taxa names as ordered in the tree (provided 
-with '-taxa'). Tree ordering is from top of the tree to the bottom as displayed
-by nw_display. For example: '-range 1 5' designates the 1st 5 taxa in the tree as
-the same clade. Example2: '-range 1 3 4 5' will split 5 taxa into 2 clades.
+The range should designate a set of taxa names in the taxon name list ('-taxa').
+For example: '-range 1 5' designates the 1st 5 taxa in the taxon name list as
+the same clade. Example2: '-range 1 3 4 5' will split a list of 5 taxa into 2 clades.
 
 Providing an odd number of arguments will cause the last range
-to extend to the end of the taxa in the tree. For example: '-range 1 3 4' is the 
-same as '-range 1 3 4 5' for a tree of 5 taxa.  
+to extend to the end of the taxon list. For example: '-range 1 3 4' is the 
+same as '-range 1 3 4 5' for a list of 5 taxa.  
 
 =head2 -name
 
-If no names are provided, clades are named as the order found in the tree.
+If no names are provided, clades are named as the order found in the taxon name list.
 
 A name should be provided for each range. For example: '-range 1 3 4 6' should have
 2 names '-name clade1 clade2'. 
@@ -274,17 +243,17 @@ A name should be provided for each range. For example: '-range 1 3 4 6' should h
 
 =head2 Renaming taxa names in gene tree by clades determined from species tree.
 
-cat gene.nwk | rename_addCladeName.pl -t species.nwk -r 1 3 4 6
+cat gene.nwk | rename_addCladeName.pl -t <(nw_labels -I species.nwk) -r 1 3 4 6
 
 =head2 Renaming taxa names in ITEP gene info table 
 
 printf "all_I_2.0_c_0.4_m_maxbit\t1" | db_getClusterGeneInformation.py |
-rename_addCladeName.pl -t tree.nwk -r 1 3 4 6
+rename_addCladeName.pl -t <(nw_labels -I tree.nwk) -r 1 3 4 6
 
 =head2 Appending clade names on end of ITEP gene info table 
 
 printf "all_I_2.0_c_0.4_m_maxbit\t1" | db_getClusterGeneInformation.py |
-rename_addCladeName.pl -t tree.nwk -a -r 1 3 4 6
+rename_addCladeName.pl -t <(nw_labels -I tree.nwk) -a -r 1 3 4 6
 
 =head1 AUTHOR
 
