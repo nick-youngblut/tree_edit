@@ -133,7 +133,7 @@
 rename_addCladeName.pl \-\- appending clade names to organism names or as a last column in a table
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-cat (table or other file) | rename_addCladeName.pl [flags] \-t <(nw_labels \-I tree.nwk) > clades_appended_file
+cat (table or other file) | rename_addCladeName.pl [flags] \-t tree.nwk > clades_appended_file
 .SS "Required flags"
 .IX Subsection "Required flags"
 .IP "\-taxa  <char>" 4
@@ -141,7 +141,7 @@ cat (table or other file) | rename_addCladeName.pl [flags] \-t <(nw_labels \-I t
 File containing list of taxa names.
 .IP "\-range  <int>" 4
 .IX Item "-range  <int>"
-Ranges delimiting clades in taxa name list (index by 1; see \s-1DESCRIPTION\s0)
+Ranges delimiting clades as orderd by tree (index by 1; see \s-1DESCRIPTION\s0)
 .SS "Optional flags"
 .IX Subsection "Optional flags"
 .IP "\-names  <char>" 4
@@ -174,16 +174,17 @@ perldoc rename_addCladeName.pl
 Add clade names to taxa names in a tree file, table, or other file.
 .SS "\-range"
 .IX Subsection "-range"
-The range should designate a set of taxa names in the taxon name list ('\-taxa').
-For example: '\-range 1 5' designates the 1st 5 taxa in the taxon name list as
-the same clade. Example2: '\-range 1 3 4 5' will split a list of 5 taxa into 2 clades.
+The range should designate a set of taxa names as ordered in the tree (provided 
+with '\-taxa'). Tree ordering is from top of the tree to the bottom as displayed
+by nw_display. For example: '\-range 1 5' designates the 1st 5 taxa in the tree as
+the same clade. Example2: '\-range 1 3 4 5' will split 5 taxa into 2 clades.
 .PP
 Providing an odd number of arguments will cause the last range
-to extend to the end of the taxon list. For example: '\-range 1 3 4' is the 
-same as '\-range 1 3 4 5' for a list of 5 taxa.
+to extend to the end of the taxa in the tree. For example: '\-range 1 3 4' is the 
+same as '\-range 1 3 4 5' for a tree of 5 taxa.
 .SS "\-name"
 .IX Subsection "-name"
-If no names are provided, clades are named as the order found in the taxon name list.
+If no names are provided, clades are named as the order found in the tree.
 .PP
 A name should be provided for each range. For example: '\-range 1 3 4 6' should have
 2 names '\-name clade1 clade2'.
@@ -191,15 +192,15 @@ A name should be provided for each range. For example: '\-range 1 3 4 6' should 
 .IX Header "EXAMPLES"
 .SS "Renaming taxa names in gene tree by clades determined from species tree."
 .IX Subsection "Renaming taxa names in gene tree by clades determined from species tree."
-cat gene.nwk | rename_addCladeName.pl \-t <(nw_labels \-I species.nwk) \-r 1 3 4 6
+cat gene.nwk | rename_addCladeName.pl \-t species.nwk \-r 1 3 4 6
 .SS "Renaming taxa names in \s-1ITEP\s0 gene info table"
 .IX Subsection "Renaming taxa names in ITEP gene info table"
 printf \*(L"all_I_2.0_c_0.4_m_maxbit\et1\*(R" | db_getClusterGeneInformation.py |
-rename_addCladeName.pl \-t <(nw_labels \-I tree.nwk) \-r 1 3 4 6
+rename_addCladeName.pl \-t tree.nwk \-r 1 3 4 6
 .SS "Appending clade names on end of \s-1ITEP\s0 gene info table"
 .IX Subsection "Appending clade names on end of ITEP gene info table"
 printf \*(L"all_I_2.0_c_0.4_m_maxbit\et1\*(R" | db_getClusterGeneInformation.py |
-rename_addCladeName.pl \-t <(nw_labels \-I tree.nwk) \-a \-r 1 3 4 6
+rename_addCladeName.pl \-t tree.nwk \-a \-r 1 3 4 6
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 Nick Youngblut <nyoungb2@illinois.edu>

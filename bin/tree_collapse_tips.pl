@@ -8,11 +8,13 @@ use Data::Dumper;
 use Getopt::Long;
 use File::Spec;
 use Bio::TreeIO;
+use List::Util qw/max/;
 
 ### args/flags
 pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 
 my ($verbose, $tree_in, $tformat, $count_in, $meta_in, $regex, $color_in, $brlen_write);
+my ($use_rep);
 my $brlen_cut = 0;
 GetOptions(
 	   "tree=s" => \$tree_in,			# tree file
@@ -23,6 +25,7 @@ GetOptions(
 	   "meta=s" => \$meta_in,
 	   "length=f" => \$brlen_cut, 
 	   "branch" => \$brlen_write, 		# write out all brlens
+	   "x" => \$use_rep, 				# use a representative taxon for name
 	   "verbose" => \$verbose,
 	   "help|?" => \&pod2usage # Help
 	   );
@@ -45,7 +48,8 @@ my $treeo = tree_io($tree_in, $tformat);
 write_brlen($treeo) if $brlen_write;
 
 # collapsing tips #
-collapse_tips_brlen($treeo, $brlen_cut, $count_r, $meta_r, $regex, $color_r);
+my $brlen_r = make_node_brlen_index($treeo);
+collapse_tips_brlen($treeo, $brlen_r, $brlen_cut, $count_r, $meta_r, $regex, $color_r);
 
 # writing modified tree #
 tree_write($treeo, $tree_in);
@@ -117,15 +121,128 @@ sub tree_write{
 sub write_brlen{
 # writing brlens of all nodes #
 	my ($treeo) = @_;
+	
+	#for my $node ($treeo->get_nodes){
+	#	next if $node->is_Leaf;
+	#	$node->id($node->height);
+	#	my @brlens;
+	#	for my $child ($node->get_all_Descendents){
+	#		push @brlens, $treeo->distance(-nodes => [$node, $child]);
+	#		}
+	#	$node->id(max(@brlens));
+	#	}
+	#tree_write($treeo, $tree_in); exit;
+	
+	
+	my $node_cnt = 0;
 	for my $node ($treeo->get_nodes){
-		next if $node->is_Leaf;					# no collapsign of leaves directly
-		print $node->height, "\n";
+		next if $node->is_Leaf;
+		
+		my @brlens;
+		for my $child ($node->get_all_Descendents){
+			push @brlens, $treeo->distance(-nodes => [$node, $child]);
+			}
+		print max(@brlens), "\n";
 		}
 
 	exit;
 	}
 
+sub make_node_brlen_index{
+	my ($treeo) = @_;
+	
+	my %brlen;
+	my $node_cnt = 0;
+	for my $node ($treeo->get_nodes){
+		next if $node->is_Leaf;
+		# labeling internal nodes w/ unique ID #
+		$node_cnt++;
+		$node->description($node_cnt);
+		next unless $node->ancestor;
+		
+		# getting distance from #
+		my @brlens;
+		for my $child ($node->get_all_Descendents){
+			push @brlens, $treeo->distance(-nodes => [$node, $child]);
+			}
+		$brlen{$node->description} = max @brlens; #$treeo->distance(-nodes => [$node->ancestor, $node]);
+		}
+
+		#print Dumper %brlen; exit;
+	return \%brlen;
+	}
+
 sub collapse_tips_brlen{
+# collapsing tips based on branch length #
+	my ($treeo, $brlen_r, $brlen_cut, $count_r, $meta_r, $regex, $color_r) = @_;
+		
+	# removing nodes from < height to > height #
+	my $col_cnt = 0;
+	foreach my $node (sort{$brlen_r->{$a}<=>$brlen_r->{$b}} keys %$brlen_r){
+		
+		# removing taxa w/ height < brlen cutoff #
+		next if $brlen_r->{$node} >= $brlen_cut;
+			
+		# getting internal node #
+		my @nodes = $treeo->find_node(-description => $node);
+		die " LOGIC ERROR: no node found! $!\n" unless @nodes;
+		die " LOGIC ERROR: >1 node found! $!\n" if scalar @nodes > 1;
+		
+		# removing all leaves 1st #
+		#my @rm_list;
+		my %rm_list;
+		for my $child ( $nodes[0]->get_all_Descendents ){
+			next unless $child->is_Leaf;
+			next if $child->is_Leaf && $regex && $child->id =~ /$regex/;
+					
+			#push(@rm_list, $child->id) if $child->is_Leaf;
+			$rm_list{$child->id} = $treeo->distance(-nodes => [$nodes[0],$child])
+				if $child->is_Leaf;
+			$treeo->remove_Node($child);
+			}
+		
+		# next, removing all internal nodes < cutoff #
+		for my $child ( $nodes[0]->get_all_Descendents ){
+			next if $child->is_Leaf && $regex && $child->id =~ /$regex/;
+			
+			#push(@rm_list, $child->id) if $child->is_Leaf;
+			#$rm_list{$child->id} = $treeo->distance(-nodes => [$nodes[0],$child])
+			#	if $child->is_Leaf;		
+			$treeo->remove_Node($child);
+			}	
+			
+		# new name for node #
+		next unless keys %rm_list;		# only if something was removed
+		
+		
+		# adding collapsed node or changing current node #
+		$col_cnt++;
+		my $col_node_name;
+		if($use_rep){
+			foreach my $child_id (sort{$rm_list{$b}<=>$rm_list{$a}} keys %rm_list){
+				#print Dumper $child_id;
+				$col_node_name = $child_id;
+				last;			
+				}
+			}
+		else{
+			$col_node_name = join("_", $col_cnt, scalar keys %rm_list);
+			}
+		
+		my $new_node = new Bio::Tree::Node(-id => $col_node_name, 
+								-branch_length => $brlen_r->{$node});			
+		$nodes[0]->add_Descendent($new_node);
+	
+		# editing metadata #
+		sum_count($count_r, [keys %rm_list], $col_node_name) if $count_r;
+		sum_meta($meta_r, [keys %rm_list], $col_node_name) if $meta_r;
+		sum_color_range($color_r, [keys %rm_list], $col_node_name) if $color_r;
+		}
+	
+	print STDERR " Number of nodes collapsed: $col_cnt\n";
+	}
+
+sub collapse_tips_brlen_OLD{
 # collapsing tips based on branch length #
 	my ($treeo, $brlen_cut, $count_r, $meta_r, $regex, $color_r) = @_;
 	
@@ -341,7 +458,7 @@ tree_collapse_tips.pl [flags]
 
 =over
 
-=item -t
+=item -tree  <char>
 
 Tree file (newick or nexus).
 
@@ -351,31 +468,35 @@ Tree file (newick or nexus).
 
 =over
 
-=item -format
+=item -format  <char>
 
 Tree file format (newick or nexus). [newick]
 
-=item -length
+=item -length  <float>
 
 Branch length cutoff. [< 0]
 
-=item -count
+=item -x  <bool>
+
+Use a repesentative sequnece for collapsed clades? [FALSE]
+
+=item -count  <char>
 
 Count file in Mothur format
 
-=item -meta
+=item -meta  <char>
 
 Metadata file in ITOL format
 
-=item -color
+=item -color  <char>
 
 Color file in ITOL format
 
-=item -regex
+=item -regex  <char>
 
 Regular expression for excluding taxa from being collapsed.
 
-=item -branch
+=item -branch  <bool>
 
 Write out all branch lengths (internal nodes to most distant decendent).
 
@@ -394,7 +515,18 @@ perldoc tree_collapse_tips.pl
 Collapse branches in a tree that have a branch length of < (-length)
 from the ancestral node.
 
+=head2 Collapsed node labeling 
+
+=head3 Default
+
 Collapsed nodes are labeled as: "collapsed-nodeID"_"number_taxa_collapsed"
+
+=head3 '-x'
+
+Leaf with the greatest branch length from the collapsed node will be used
+as the representative taxon.
+
+=head2 Metadata
 
 If any metadata files are provided (count, ITOL-metadata, color), 
 the taxon labels are updated and the abundances are summed. A random 
@@ -413,13 +545,17 @@ Output file names are based on input file names ("*br-col*")
 
 tree_collapse_tips.pl -t tree.nwk -branch
 
+=head2 Collapse tree and use repesentative taxon names
+
+tree_collapse_tips.pl -t tree.nwk -l 0.001 -x
+
 =head2 Collapse tree with a metadata file
 
-tree_collapse_tips.pl -t tree.nwk -meta meta.txt 
+tree_collapse_tips.pl -t tree.nwk -meta meta.txt -l 0.001
 
 =head2 Collapse tree with a count file
 
-tree_collapse_tips.pl -t tree.nwk -count count.txt
+tree_collapse_tips.pl -t tree.nwk -count count.txt -l 0.001
 
 =head1 AUTHOR
 
