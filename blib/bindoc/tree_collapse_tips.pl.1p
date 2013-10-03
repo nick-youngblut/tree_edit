@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "TREE_COLLAPSE_TIPS 1"
-.TH TREE_COLLAPSE_TIPS 1 "2013-04-22" "perl v5.14.2" "User Contributed Perl Documentation"
+.TH TREE_COLLAPSE_TIPS 1 "2013-10-02" "perl v5.14.2" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -136,31 +136,34 @@ tree_collapse_tips.pl \-\- collapsing tips by a branch length cutoff
 tree_collapse_tips.pl [flags]
 .SS "require flags"
 .IX Subsection "require flags"
-.IP "\-t" 4
-.IX Item "-t"
+.IP "\-tree  <char>" 4
+.IX Item "-tree  <char>"
 Tree file (newick or nexus).
 .SS "optional flags"
 .IX Subsection "optional flags"
-.IP "\-format" 4
-.IX Item "-format"
+.IP "\-format  <char>" 4
+.IX Item "-format  <char>"
 Tree file format (newick or nexus). [newick]
-.IP "\-length" 4
-.IX Item "-length"
+.IP "\-length  <float>" 4
+.IX Item "-length  <float>"
 Branch length cutoff. [< 0]
-.IP "\-count" 4
-.IX Item "-count"
+.IP "\-x  <bool>" 4
+.IX Item "-x  <bool>"
+Use a repesentative sequnece for collapsed clades? [\s-1FALSE\s0]
+.IP "\-count  <char>" 4
+.IX Item "-count  <char>"
 Count file in Mothur format
-.IP "\-meta" 4
-.IX Item "-meta"
+.IP "\-meta  <char>" 4
+.IX Item "-meta  <char>"
 Metadata file in \s-1ITOL\s0 format
-.IP "\-color" 4
-.IX Item "-color"
+.IP "\-color  <char>" 4
+.IX Item "-color  <char>"
 Color file in \s-1ITOL\s0 format
-.IP "\-regex" 4
-.IX Item "-regex"
+.IP "\-regex  <char>" 4
+.IX Item "-regex  <char>"
 Regular expression for excluding taxa from being collapsed.
-.IP "\-branch" 4
-.IX Item "-branch"
+.IP "\-branch  <bool>" 4
+.IX Item "-branch  <bool>"
 Write out all branch lengths (internal nodes to most distant decendent).
 .IP "\-v	Verbose output" 4
 .IX Item "-v	Verbose output"
@@ -175,9 +178,20 @@ perldoc tree_collapse_tips.pl
 .IX Header "DESCRIPTION"
 Collapse branches in a tree that have a branch length of < (\-length)
 from the ancestral node.
+.SS "Collapsed node labeling"
+.IX Subsection "Collapsed node labeling"
+\fIDefault\fR
+.IX Subsection "Default"
 .PP
 Collapsed nodes are labeled as: \*(L"collapsed\-nodeID\*(R"_\*(L"number_taxa_collapsed\*(R"
 .PP
+\fI'\-x'\fR
+.IX Subsection "'-x'"
+.PP
+Leaf with the greatest branch length from the collapsed node will be used
+as the representative taxon.
+.SS "Metadata"
+.IX Subsection "Metadata"
 If any metadata files are provided (count, ITOL-metadata, color), 
 the taxon labels are updated and the abundances are summed. A random 
 taxon in a collapsed clade will be used for the color info if a
@@ -192,12 +206,15 @@ Output file names are based on input file names (\*(L"*br\-col*\*(R")
 .SS "Getting branch length distribution"
 .IX Subsection "Getting branch length distribution"
 tree_collapse_tips.pl \-t tree.nwk \-branch
+.SS "Collapse tree and use repesentative taxon names"
+.IX Subsection "Collapse tree and use repesentative taxon names"
+tree_collapse_tips.pl \-t tree.nwk \-l 0.001 \-x
 .SS "Collapse tree with a metadata file"
 .IX Subsection "Collapse tree with a metadata file"
-tree_collapse_tips.pl \-t tree.nwk \-meta meta.txt
+tree_collapse_tips.pl \-t tree.nwk \-meta meta.txt \-l 0.001
 .SS "Collapse tree with a count file"
 .IX Subsection "Collapse tree with a count file"
-tree_collapse_tips.pl \-t tree.nwk \-count count.txt
+tree_collapse_tips.pl \-t tree.nwk \-count count.txt \-l 0.001
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 Nick Youngblut <nyoungb2@illinois.edu>

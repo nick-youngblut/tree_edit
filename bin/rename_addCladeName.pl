@@ -63,7 +63,7 @@ sub rename_taxa_add_clade{
 		foreach my $taxon_regex (keys %$index_r){
 			my $r = join("", $delimiter, $index_r->{$taxon_regex});
 			$_ =~ s/($taxon_regex)/$1$r/g;
-			last if $_ =~ /$taxon_regex/;
+			#last if $_ =~ /$taxon_regex/;
 			}
 		
 		print "$_\n";
@@ -203,9 +203,9 @@ cat (table or other file) | rename_addCladeName.pl [flags] -t tree.nwk > clades_
 
 =over
 
-=item -taxa  <char>
+=item -tree  <char>
 
-File containing list of taxa names.
+Tree file (newick format).
 
 =item -range  <int>
 
