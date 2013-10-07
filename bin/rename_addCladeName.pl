@@ -12,10 +12,10 @@ use File::Spec;
 pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 
 my ($verbose, @range, @names, $append);
-my ($delimiter, $punct, $taxa_in);
+my ($delimiter, $punct, $taxa_in, $write_taxa);
 my $column = 2;
 GetOptions(
-	   "taxa=s" => \$taxa_in,
+	   "tree=s" => \$taxa_in,
 	   "range=i{,}" => \@range,
 	   "names=s{,}" => \@names,
 	   "delimit=s" => \$delimiter,
@@ -23,16 +23,17 @@ GetOptions(
 	   "column=i" => \$column,
 	   "w" => \$punct, 					# non-characters can be anything [TRUE]
 	   "verbose" => \$verbose,
+	   "x" => \$write_taxa,
 	   "help|?" => \&pod2usage # Help
 	   );
 
 ### I/O error & defaults
-die " ERROR: provide a list of taxon names (-t)!\n"
+die " ERROR: provide a newick formatted tree (-t)!\n"
 	unless $taxa_in;
 die " ERROR: cannot find $taxa_in!\n"
 	unless -e $taxa_in;
 die " ERROR: provide a range designating clades!\n"
-	unless @range;
+	if ! $write_taxa && ! @range;
 $column--;
 if(! $delimiter){
 	if($append){  $delimiter = "\t"; }
@@ -41,6 +42,7 @@ if(! $delimiter){
 
 ### MAIN
 my $taxon_names_r = load_taxon_names($taxa_in);
+write_taxa_names($taxon_names_r) if $write_taxa;
 my $index_r = make_name_clade_index($taxon_names_r, \@range, \@names);
 
 
@@ -163,6 +165,15 @@ sub load_taxon_names{
 	return \@names;
 	}
 
+sub write_taxa_names{
+	my ($taxa_names_r) = @_;
+	
+	foreach (@$taxa_names_r){
+		print $_, "\n";
+		}
+	exit;
+	}
+
 sub load_taxon_names_OLD{
 # loading names 
 	my $taxa_in = shift;
@@ -238,13 +249,17 @@ Column in table for taxon name matching (index by 1; only if '-append'). [2]
 
 Non-alpha-numeric characters count as anything ('.') in regular expression? [TRUE]
 
+=item -x  <bool>
+
+Just write taxa names as listed by nw_display and exit. [FALSE]
+
 =item -v	Verbose output
 
 =item -h	This help message
 
+=head2 For more information:
 =back
 
-=head2 For more information:
 
 perldoc rename_addCladeName.pl
 
@@ -261,7 +276,9 @@ the same clade. Example2: '-range 1 3 4 5' will split 5 taxa into 2 clades.
 
 Providing an odd number of arguments will cause the last range
 to extend to the end of the taxa in the tree. For example: '-range 1 3 4' is the 
-same as '-range 1 3 4 5' for a tree of 5 taxa.  
+same as '-range 1 3 4 5' for a tree of 5 taxa.
+
+Use '-x' to just list taxa names as shown by nw_display.  
 
 =head2 -name
 
@@ -285,6 +302,10 @@ rename_addCladeName.pl -t tree.nwk -r 1 3 4 6
 
 printf "all_I_2.0_c_0.4_m_maxbit\t1" | db_getClusterGeneInformation.py |
 rename_addCladeName.pl -t tree.nwk -a -r 1 3 4 6
+
+=head2 Listing taxa names
+
+rename_addCladeName.pl -t tree.nwk -x
 
 =head1 AUTHOR
 

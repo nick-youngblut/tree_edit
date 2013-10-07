@@ -50,6 +50,7 @@ write_brlen($treeo) if $brlen_write;
 # collapsing tips #
 my $brlen_r = make_node_brlen_index($treeo);
 collapse_tips_brlen($treeo, $brlen_r, $brlen_cut, $count_r, $meta_r, $regex, $color_r);
+remove_nonfurcating_nodes($treeo);
 
 # writing modified tree #
 tree_write($treeo, $tree_in);
@@ -61,6 +62,41 @@ write_count($count_r, $count_in) if $count_in;
 
 
 ### Subroutines
+sub remove_nonfurcating_nodes{
+	my ($treeo) = @_;
+	
+	foreach my $node ($treeo->get_nodes){
+		next if $node->is_Leaf;
+		
+		my @desc = $node->get_all_Descendents;
+		my @leaf_desc;
+		foreach (@desc){
+			push @leaf_desc, $_ if $_->is_Leaf;
+			}
+		
+
+		if(scalar @leaf_desc == 1){		# only 1 extant child; removing intermediate nodes
+			# getting new node info #
+			my $leaf_id = $leaf_desc[0]->id;
+			my $node_dist = $treeo->distance(-nodes => [$node->ancestor, $leaf_desc[0]]);
+			my $anc = $node->ancestor;
+
+			# removing nodes #
+			foreach my $n (@desc){		
+				$treeo->remove_Node($n);
+				}
+			$treeo->remove_Node($node);
+			
+			# new node #
+			my $new_node = new Bio::Tree::Node(-id => $leaf_id, 
+							-branch_length => $node_dist);	
+			$anc->add_Descendent($new_node);
+			}
+			
+		}
+
+	}
+
 sub write_count{
 # writing metadata #
 	my ($count_r, $count_in) = @_;
@@ -212,7 +248,7 @@ sub collapse_tips_brlen{
 			}	
 			
 		# new name for node #
-		next unless keys %rm_list;		# only if something was removed
+		next unless keys %rm_list;		# only if something was removed	
 		
 		
 		# adding collapsed node or changing current node #
