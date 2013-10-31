@@ -109,6 +109,7 @@ do{ my $x = [
          'pm_files' => undef,
          'quiet' => undef,
          'script_files' => [
+                             './bin/iTOL_uploader.pl',
                              './bin/tree_get_names.r',
                              './bin/tree_multi2di.r',
                              './bin/tree_brlen_transform_OLD.pl',
@@ -139,6 +140,7 @@ do{ my $x = [
                              './bin/tree_attribute_edit.pl',
                              './bin/adaptML_hab-mtx_convert.pl',
                              './bin/tree_cat.pl',
+                             './bin/iTOL_downloader.pl',
                              './bin/tree_PruneByAbundance.pl',
                              './bin/HiDe_clean_trees.r'
                            ],

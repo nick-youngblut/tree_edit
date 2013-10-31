@@ -218,9 +218,16 @@ cat (table or other file) | rename_addCladeName.pl [flags] -t tree.nwk > clades_
 
 Tree file (newick format).
 
+=back
+
+=head2 Semi-required flags
+
+=over
+
 =item -range  <int>
 
-Ranges delimiting clades as orderd by tree (index by 1; see DESCRIPTION)
+Ranges delimiting clades as orderd by tree (index by 1; see DESCRIPTION).
+Not needed if '-x'
 
 =back
 
