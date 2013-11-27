@@ -8,7 +8,7 @@ use LWP::UserAgent;
 use Pod::Usage;
 use Getopt::Regex;
 use Config::File::Simple;
-
+use Data::Dumper;
 
 =pod
 
@@ -457,9 +457,9 @@ pod2usage(VERBOSE => 2) if ( $showHelp );
 
 if (-e $configFile) {
 	my $cfg = new Config::File::Simple($configFile);
-	$treeFile = $cfg->read('treeFile');
-	$treeFormat = $cfg->read('treeFormat');
-	$treeName = $cfg->read('treeName');
+	$treeFile = $cfg->read('treeFile') if $cfg->read('treeFile');
+	$treeFormat = $cfg->read('treeFormat') if $cfg->read('treeFormat');
+	$treeName = $cfg->read('treeName') if $cfg->read('treeName');
 	$treeDescription = $cfg->read('treeDescription');
 	$ncbiFile = $cfg->read('ncbiFile');
 	$ncbiFormat = $cfg->read('ncbiFormat');
@@ -471,7 +471,7 @@ if (-e $configFile) {
 	$popupInfoFile = $cfg->read('popupInfoFile');
 	$fontStylesFile = $cfg->read('fontStylesFile');
 	$internalNamesFile = $cfg->read('internalNamesFile');
-	$HGTFile = $cfg->read('HGTFile');
+	$HGTFile = $cfg->read('HGTFile') if $cfg->read('HGTFile');
 	$colorDefinitionFile = $cfg->read('colorDefinitionFile');
 	$assignTaxonomy = $cfg->read('assignTaxonomy');
 	$midpointRoot = $cfg->read('midpointRoot');
@@ -513,6 +513,8 @@ if (-e $configFile) {
 	  $datasets{"d$_"}{"circ_trans"} = $cfg->read("dataset$_" . "CirclesTransparent") if ($cfg->read("dataset$_" . "CirclesTransparent"));
 	}
 }
+
+#print Dumper $HGTFile; exit;
 
 print "\niTOL batch uploader\n===================\n";
 #need a tree
