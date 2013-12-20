@@ -127,6 +127,7 @@ do{ my $x = [
                              './bin/tree_expand.pl',
                              './bin/tree_edit_leaves.pl',
                              './bin/tree_nameGeneBySpecies.pl',
+                             './bin/ultrametric.r',
                              './bin/tree_multi_newick2nexus.pl',
                              './bin/tree_nodeByCladeTable.pl',
                              './bin/tree_PruneByAbundance.r',
