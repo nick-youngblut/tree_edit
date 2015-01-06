@@ -1,4 +1,4 @@
 do{ my $x = {
-       'install_base' => '/home/nyoungb2/perl5'
+       'install_base' => '/home/nick/perl5/'
      };
 $x; }

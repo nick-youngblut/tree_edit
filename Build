@@ -7,11 +7,11 @@ use File::Spec;
 
 sub magic_number_matches {
   return 0 unless -e '_build/magicnum';
-  local *FH;
-  open FH, '_build/magicnum' or return 0;
-  my $filenum = <FH>;
-  close FH;
-  return $filenum == 182411;
+  my $FH;
+  open $FH, '<','_build/magicnum' or return 0;
+  my $filenum = <$FH>;
+  close $FH;
+  return $filenum == 36897;
 }
 
 my $progname;
@@ -20,7 +20,7 @@ BEGIN {
   $^W = 1;  # Use warnings
   $progname = basename($0);
   $orig_dir = Cwd::cwd();
-  my $base_dir = '/home/nyoungb2/perl/projects/tree_edit';
+  my $base_dir = '/home/nick/dev/tree_edit';
   if (!magic_number_matches()) {
     unless (chdir($base_dir)) {
       die ("Couldn't chdir($base_dir), aborting\n");
@@ -31,23 +31,16 @@ BEGIN {
   }
   unshift @INC,
     (
-     '/home/nyoungb2/perl5/lib/perl5/x86_64-linux-gnu-thread-multi',
-     '/home/nyoungb2/perl5/lib/perl5',
-     '/opt/aligners/perl',
-     '/usr/local/bin',
-     '/opt/vcftools_0.1.9/bin',
-     '/opt/iCORN-v0.97',
-     '/opt/RAST_api/lib',
-     '/opt/RepeatMasker',
-     '/opt/mugsy/perllibs',
-     '/usr/local/lib/perl/5.14.2',
-     '/opt/RAST_api/lib'
+     '/home/nick/perl5/lib/perl5/x86_64-linux-gnu-thread-multi',
+     '/home/nick/perl5/lib/perl5',
+     '/opt/bioinfo/mugsy_x86-64-v1r2.3/perllibs'
     );
 }
 
 close(*DATA) unless eof(*DATA); # ensure no open handles to this script
 
 use Module::Build;
+Module::Build->VERSION(q{0});
 
 # Some platforms have problems setting $^X in shebang contexts, fix it up here
 $^X = Module::Build->find_perl_interpreter;

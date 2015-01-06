@@ -1,0 +1,47 @@
+#!/bin/bash
+# General bash setup for command-subcommand autocomplete.
+# This will also add the main command to your $PATH.
+# Source this file from your .profile or .bashrc to make permanent.
+## e.g., `source ~/path/to/THISFILE.completion`
+
+EXEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+export PATH="$PATH:$EXEDIR"
+BINDIR=$EXEDIR'/bin/'
+
+
+tree_editSubcmds=`find $BINDIR -maxdepth 1 -name "*.pl" -o -name "*.py" -o -name "*.r" | perl -pe 's/.+\///g;s/\.[^.]+$/\n/'`
+tree_editSubcmdsPerl=`find $BINDIR -maxdepth 1 -name '*.pl' | perl -pe 's/.+\///g;s/\.[^.]+$/\n/'`
+
+
+_tree_edit ()
+{
+  local fileNames dirNames cur prev
+
+  cur=${COMP_WORDS[COMP_CWORD]}
+  prev1=${COMP_WORDS[COMP_CWORD-1]}
+  prev2=${COMP_WORDS[COMP_CWORD-2]}
+
+  COMPREPLY=()
+
+  fileNames=''
+  dirNames=''
+
+  if [[ ${cur} == * && ${prev1} == *tree_edit ]]; then
+      COMPREPLY=( $( compgen -W '$tree_editSubcmds' ${cur} ) )
+
+  elif [[ ${cur} == * && ${prev1} == *-p* && ${prev2} == *tree_edit ]]; then
+      COMPREPLY=( $( compgen -W '$tree_editSubcmdsPerl' ${cur} ) )
+     
+  else
+      # no hiddne files/directories
+      fileNames=$( compgen -f -X '.*' -- "$cur" )
+      dirNames=$( compgen -d -X '.*' -- "$cur" )
+
+      COMPREPLY=(
+          $( compgen -W "$fileNames $dirNames" -- ${cur} )
+      )
+  fi
+
+}
+
+complete -o default -F _tree_edit tree_edit

@@ -2,6 +2,7 @@ do{ my $x = {
        'build_requires' => {
                              'Test::More' => 0
                            },
+       'test_requires' => {},
        'conflicts' => {},
        'requires' => {},
        'recommends' => {}

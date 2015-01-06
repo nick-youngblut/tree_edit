@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+#--- Option parsing ---#
+"""
+tree_edit: scripts from the Island of Lost Scripts
+
+Usage:
+  tree_edit [options] <command> [<args>...]
+  tree_edit -h | --help
+  tree_edit --version
+
+Options:
+  -p --perldoc  Get perldoc of command.
+  -h --help     Show this screen.
+  --version     Show version.
+
+Commands:
+  fasta_unwrap
+  filter_seq
+  geo_coord_convert
+  rInstallPackages
+  rnammer_filt
+
+Description:
+  This is the main command to call various scripts associated with this project.
+"""
+
+import os, sys
+from docopt import docopt
+from subprocess import call
+
+scriptDir = os.path.dirname(__file__)
+subcmdDir = os.path.join(scriptDir, 'bin')
+
+if __name__ == '__main__':
+    args = docopt(__doc__,
+                  version='0.1',
+                  options_first=True)
+
+
+    # subcommand script
+    exts = ['.pl', '.py', '.r']
+    scriptFiles = [os.path.join(subcmdDir, args['<command>'] + ext) for ext in exts]
+    scriptFiles = filter(os.path.isfile, scriptFiles)
+    if len(scriptFiles) < 1:
+        exit('"{}" is not a valid command. See "tree_edit -h".'.format(args['<command>']))
+
+    
+    # calling subcommand script
+    cmd = [scriptFiles[0]] + args['<args>']
+    if args['--perldoc']:
+        cmd = ['perldoc'] + cmd    
+    exit(call(cmd))
