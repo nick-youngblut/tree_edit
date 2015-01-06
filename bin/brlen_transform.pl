@@ -122,11 +122,11 @@ __END__
 
 =head1 NAME
 
-tree_brlen_transform.pl -- Alter branch lengths
+brlen_transform.pl -- Alter branch lengths
 
 =head1 SYNOPSIS
 
-tree_brlen_transform.pl [options]
+brlen_transform.pl [options]
 
 =head2 Required Arguments
 
@@ -186,11 +186,11 @@ are too long or short. This can occur when using RAxML's EPA function.
 
 =head2 Writing out max branch length
 
-tree_brlen_transform.pl -tree tree.nwk -m
+brlen_transform.pl -tree tree.nwk -m
 
 =head2 Transforming branch lengths of just certain tips (regex)
 
-tree_brlen_transform.pl -tree tree.nwk -r "Methano"
+brlen_transform.pl -tree tree.nwk -r "Methano"
 
 =head1 AUTHOR
 

@@ -15,11 +15,41 @@ Options:
   --version     Show version.
 
 Commands:
-  fasta_unwrap
-  filter_seq
-  geo_coord_convert
-  rInstallPackages
-  rnammer_filt
+  adaptML_get_pop
+  adaptML_hab-mtx_convert
+  adaptML_name_tree
+  adaptML_niche_transition
+  add_attribute
+  attribute_edit
+  bootMapper
+  brlen_mod
+  brlen_transform
+  cat
+  collapse_tips
+  convert
+  dist_from_root
+  edit_leaves
+  expand
+  get_names
+  get_names
+  HiDe_clean_trees
+  HiDe_tree_cleaner
+  iTOL_downloader
+  iTOL_uploader
+  ladderize
+  lca_finder
+  makeCOGMetadata
+  multi2di
+  multi_newick2nexus
+  nameGeneBySpecies
+  nodeByCladeTable
+  prune
+  PruneByAbundance
+  PruneByAbundance
+  randomize_leaves
+  rename_addCladeName
+  rm_brlen
+  ultrametric
 
 Description:
   This is the main command to call various scripts associated with this project.

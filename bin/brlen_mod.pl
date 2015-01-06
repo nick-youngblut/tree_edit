@@ -196,7 +196,7 @@ sub error_routine{
 sub usage {
  my $usage = <<HERE;
 Usage:
-  tree_brlen_mod.pl -tree -brlen [-format] [-o]
+  brlen_mod.pl -tree -brlen [-format] [-o]
   * used with output from cor_network_nest_mthr.R
 Options:
   -tree		Tree file name. (newick or nexus)

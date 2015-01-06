@@ -209,7 +209,7 @@ sub error_routine{
 sub usage {
  my $usage = <<HERE;
 Usage:
- tree_cat.pl [-i] [-o] [-f] [-w] ...
+ cat.pl [-i] [-o] [-f] [-w] ...
 Options:
  -i 	Input tree file format (newick or nexus)
  			[default: nexus]
