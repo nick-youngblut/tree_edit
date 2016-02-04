@@ -13,27 +13,27 @@ use Bio::TreeIO;
 pod2usage("$0: No files given.") if ((@ARGV == 0) && (-t STDIN));
 
 my ($verbose, $tree_in, $count_in, $format);
+my $clonal_cut = 0;
 GetOptions(
-	   "tree=s" => \$tree_in,		# tree file
-	   "count=s" => \$count_in,		# habitat file (2column)
-	   "format=s" => \$format,		# tree format
+	   "tree=s" => \$tree_in,	       # tree file
+	   "format=s" => \$format,	       # tree format
+	   "cutoff=f" => \$clonal_cut,         # branch length cutoff for determining clonal
 	   "verbose" => \$verbose,
-	   "help|?" => \&pod2usage # Help
+	   "help|?" => \&pod2usage          # Help
 	   );
 
 ### I/O error & defaults
 die " ERROR: Provide tree file (newick or nexus format)." if ! $tree_in;
 if(! $format){ $format = "newick"; }
 $format = check_format($format);
-die " ERROR: Provide a count file (Mothur format)." if ! $count_in;
+
 
 ### I/O error & defaults
-(my $outfile = $tree_in) =~ s/\.[^\.]+$|$/_exp.nwk/;
+(my $outfile = $tree_in) =~ s/\.[^\.]+$|$/_clps.nwk/;
 
 ### MAIN
 my $treeo = tree_io($tree_in, $format);
-my $count_ref = load_count($count_in);
-$treeo = expand_taxa($treeo, $count_ref);
+$treeo = collapse_clonal($treeo, $clonal_cut);
 tree_write($treeo, $outfile);
 
 
@@ -44,7 +44,7 @@ sub tree_write{
   my ($treeo, $outfile) = @_;
   my $out = new Bio::TreeIO(-file => ">$outfile", -format => "newick");
   $out->write_tree($treeo);
-  print STDERR " Newick tree file written:\n  $outfile\n";
+  print STDERR " Newick tree file written: $outfile\n";
 }
 
 sub write_root{
@@ -53,61 +53,39 @@ sub write_root{
   print "Root_id = ", $root->id, "\n";
 }
 
-sub expand_taxa{
+sub collapse_clonal{
   # expanding (replicating) taxa so that there is a rep (clonal) for each sample #
-  my ($treeo, $count_ref) = @_;
+  my $treeo = shift or die $!;
+  my $clonal_cut = shift or 0;
   
   my $leaf_cnt = 0;
   for my $leaf ($treeo->get_leaf_nodes){
-    #print Dumper $leaf->id; 
     $leaf_cnt++;
-    
-    # finding ancestor #
-    my $anc = $leaf->ancestor;
-    
-    # getting leaf info #
-    my $leaf_id = $leaf->id;
-    my $leaf_br = $leaf->branch_length;
-    
-    # adding clonal replicate taxa (for each sample) #
-    die " ERROR: ", $leaf_id, " not found in count table\n" if ! exists $$count_ref{$leaf_id};
-    foreach my $samp (@{$$count_ref{$leaf_id}}){
-      # adding clonal taxa #
-      $leaf->add_Descendent($leaf->new(-id => join("_", $samp, $leaf_cnt), 
-				       -branch_length => 0));
-      
-      # renaming leaf #
-      $leaf->id("");
-    }
-    
+
+    # filtering clonal
+    if ($leaf->branch_length <= $clonal_cut){
+      # getting all siblings and trimming redundant EcologyIDs
+      my $anc = $leaf->ancestor;
+      next unless defined $anc;
+
+      my %ecoIDs; 
+      for my $child ($anc->get_all_Descendents){
+	my ($ecoID, $ID) = split /_/, $child->id, 2;
+	if (exists $ecoIDs{$ecoID}){
+	  # pruning taxa
+	  print STDERR " Pruning: " . $child->id . "\n";
+	  $treeo->remove_Node($child);
+	}
+	else{
+	  $ecoIDs{$ecoID} = 1;
+	}
+      }
+    }    
   }
   
   return $treeo;
 }
 
-sub load_count{
-  # loading count table (mothur format #
-  my $count_in = shift;
-  
-  open IN, $count_in or die $!;
-  my %cnt_tbl;
-  my @header;
-  while(<IN>){
-    chomp;
-    if($.==1){	# header
-      @header = split /\t/;
-    }
-    else{
-      my @line = split /\t/;
-      for my $i (2..$#line){
-	push(@{$cnt_tbl{$line[0]}}, $header[$i]) if $line[$i] > 0;
-      }
-    }
-  }
-  close IN;
-  #print Dumper %cnt_tbl; exit;
-  return \%cnt_tbl;
-}
 
 sub tree_io{
   # loading tree object #
@@ -151,11 +129,11 @@ __END__
 
 =head1 NAME
 
-tree_expand.pl -- Replicate (add clonal taxa) to a tree.
+adaptML_prune_clonal.pl -- Prune clonal taxa with the same EcologyID
 
 =head1 SYNOPSIS
 
-tree_expand.pl -t -c [-f]
+adaptML_prune_clonal.pl -t -c [-f]
 
 =head2 options
 
@@ -163,9 +141,9 @@ tree_expand.pl -t -c [-f]
 
 =item -t 	Tree file (newick | nexus)
 
-=item -c 	Count file (Mothur format)
-
 =item -f 	Tree file format. [newick]
+
+=item -c        Branch length cutoff for defining clonal taxa. [0]
 
 =item -v	Verbose output
 
@@ -175,23 +153,12 @@ tree_expand.pl -t -c [-f]
 
 =head2 For more information:
 
-perldoc tree_expand.pl
+perldoc adaptML_prune_clonal.pl
 
 =head1 DESCRIPTION
 
-The script will duplicate taxa (clonal duplicates), in order to 
-have a representative from each environment in the tree. This is
-needed for AdaptML.
-
-=head2 Example:
-
-OTU1 is found in Sample1 & Sample2
-
-OTU1 would then be split in the tree to Sample1_1 Sample2_1
-
-=head1 EXAMPLES
-
-tree_expand.pl tree_expand.pl -t file.nwk -c file.count
+Remove clonal taxa from a tree with the same EcologyID.
+This prevents spurious results when running AdaptML.
 
 =head1 AUTHOR
 

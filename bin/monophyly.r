@@ -90,6 +90,6 @@ tree = multi2di(tree)
 
 # MonoPhy
 monophy.res = AssessMonophyly(tree, df.tax)
-outFile = file.path(workDir, opts[['-o']])
+outFile = opts[['-o']]
 saveRDS(monophy.res, outFile)
 cat('File saved to:', outFile, '\n')
