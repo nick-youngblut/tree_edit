@@ -177,21 +177,24 @@ tree_expand.pl -t -c [-f]
 
 perldoc tree_expand.pl
 
+
 =head1 DESCRIPTION
 
 The script will duplicate taxa (clonal duplicates), in order to 
-have a representative from each environment in the tree. This is
-needed for AdaptML.
+have a representative from each environment in the tree. Essentially,
+tree tips are added, each without branch length to the original 
+tip used for making the added tips. This is needed for AdaptML.
 
 =head2 Example:
 
-OTU1 is found in Sample1 & Sample2
+OTU1 is found in Sample1 & Sample2 (as defined in the cound file)
 
 OTU1 would then be split in the tree to Sample1_1 Sample2_1
 
-=head1 EXAMPLES
+=head2 Mothur count file format:
 
-tree_expand.pl tree_expand.pl -t file.nwk -c file.count
+http://www.mothur.org/wiki/Count_File
+
 
 =head1 AUTHOR
 
