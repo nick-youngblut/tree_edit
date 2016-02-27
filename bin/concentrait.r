@@ -6,12 +6,14 @@ rm(list=ls())
 # opt parsing
 suppressPackageStartupMessages(library(docopt))
 
-'Usage: concentrait.r [Options] [-x | <tree> <trait>]
+'Usage: concentrait.r [options] <tree> <trait>
 
-Options:
+options:
   <tree>       Newick tree file (multitree)
   <trait>      Trait table (no headers)
-  -p=<p>       Percent shared trait cutoff.
+  -b=<r>       Number trait bootstraps per bootstrap tree.
+               [Default: 10]
+  -s=<s>       Percent shared trait cutoff.
                [Default: 90]
   -c=<c>       Cluster size file name prefix.
                [Default: cluster_size]
@@ -19,12 +21,16 @@ Options:
                [Default: cluster_dist]
   -t=<m>       Tau_D table name.
                [Default: Tau_D.txt]
+  -u=<u>       Tau_D bootstrap table name.
+               [Default: Tau_D_boot.txt]
   -x=<x>       Create a test tree & trait file with `x` taxa.
-  -b=<b>       Number of simulated trees to make.
+  -n=<b>       Number of simulated trees to make.
                [Default: 10]
+  -p=<p>       Number of processors.
+               [Default: 1]
   -h           Help
 
-Description:
+description:
   The script requires two input files as arguments:
   a Newick Tree and tab delimited text file with names
   of each taxon in the first column and then 0 or 1
@@ -34,7 +40,10 @@ Description:
   Tau_D is average consensus sequence distance (branch length)
   between trait values.
 
-  Dependencies: data.table, adephylo, ape, docopt
+  This version of concenTRAIT will conduct the non-parametric
+  bootstrapping (in parallel) for calculating p-values).
+
+  Dependencies: data.table, adephylo, ape, docopt, parallel (if using >1 processor)
 
   For more info: http://www.ess.uci.edu/group/amartiny/research/consentrait
 ' -> doc
@@ -46,6 +55,9 @@ pkgs <- c('data.table', 'adephylo', 'ape')
 for(x in pkgs){
   suppressPackageStartupMessages(library(x, character.only=TRUE))
 }
+if(opts[['-p']] > 1){
+  suppressPackageStartupMessages(library('parallel', character.only=TRUE))
+}
 
 # Test files
 if(!is.null(opts[['-x']])){
@@ -53,7 +65,7 @@ if(!is.null(opts[['-x']])){
   out.trait = 'concentrait_TEST.txt'
   # tree(s)
   n.taxa = as.numeric(opts['-x'])
-  tree = rmtree(opts[['-b']], n.taxa)
+  tree = rmtree(opts[['-n']], n.taxa)
   write.tree(tree, out.tree)
   
   ## traits
@@ -63,7 +75,7 @@ if(!is.null(opts[['-x']])){
     'trait2' = sample(c(0,1), n.taxa, replace=TRUE))
   write.table(df, out.trait, sep='\t', quote=FALSE, row.names=FALSE, col.names=FALSE)
   msg = paste(c('Test files written: ', out.tree, ', ', out.trait, '\n'), collapse='')
-  cat(msg)
+  cat(msg, file = stderr())
   
   opt <- options(show.error.messages=FALSE)
   on.exit(options(opt))
@@ -72,7 +84,7 @@ if(!is.null(opts[['-x']])){
 
 
 # Params
-perc.share.cutoff = as.numeric(opts[['-p']])
+perc.share.cutoff = as.numeric(opts[['-s']])
 stopifnot((perc.share.cutoff >= 0) &  (perc.share.cutoff <= 100))
 perc.share.cutoff = perc.share.cutoff / 100
 
@@ -83,115 +95,183 @@ tree_all = read.tree(opts[['<tree>']],keep.multi = TRUE)
 ## Trait table w. no headers
 table = read.table(opts[['<trait>']], sep = "\t", header=FALSE)
 
-# Init
-n.trees = length(tree_all)
-Mean_all = matrix(nrow=ncol(table)-1,ncol=n.trees)
 
 #loop through all trees
-for (m in 1:length(tree_all)) {
-  cat("Analyzing tree: ",m,"\n")
+
+conc.trait = function(table, tree_all, opts, boot=FALSE){
+  cat('Analyzing bootstrap replicate...\n', file = stderr())
+  # init
+  n.trees = length(tree_all)
+  Mean_all = matrix(nrow=ncol(table)-1,ncol=n.trees)
+
+  for (m in 1:length(tree_all)) {
+    if(boot==FALSE){
+      cat("Analyzing tree: ",m,"\n", file = stderr())
+    }
   
-  # testing if table and tree contain the same entries - else drop tips
-  tree = tree_all[[m]]  
-  z = subset(tree$tip.label,!(tree$tip.label %in% table[,1]))
-  if (length(z) > 0) {
-    drop.tip(tree,z)
-  }
+    # testing if table and tree contain the same entries - else drop tips
+    tree = tree_all[[m]]  
+    z = subset(tree$tip.label,!(tree$tip.label %in% table[,1]))
+    if (length(z) > 0) {
+      drop.tip(tree,z)
+    }
 
-  #rooting tree with first taxon - change if different root
-  root_tree = root(tree,1,resolve.root=T)
-  #replacing negative branch lengths - e.g., from PHYLIP
-  root_tree$edge.length[root_tree$edge.length <= 0] =  0.00001
-  subtree = subtrees(root_tree, wait=FALSE)
+    #rooting tree with first taxon - change if different root
+    root_tree = root(tree,1,resolve.root=T)
+    #replacing negative branch lengths - e.g., from PHYLIP
+    root_tree$edge.length[root_tree$edge.length <= 0] =  0.00001
+    subtree = subtrees(root_tree, wait=FALSE)
 
-  cluster_mean = numeric(length=0)
-  # loop through all traits
-  for (j in 2:ncol(table)) {
-     cat("  Analyzing trait: ",j-1,"\n")
-     #Loading trait table
-     table_tmp = table[,c(1,j)]
-     colnames(table_tmp)[1] = "ID";
-     colnames(table_tmp)[2] = "Trait";
-     
-     # removing all entries not in tree 
-     table_tmp2 = data.table(table_tmp)
-     setkey(table_tmp2,ID)
-     table2 = table_tmp2[intersect(table_tmp2$ID,root_tree$tip.label)]
-     setkey(table2,ID)
+    cluster_mean = numeric(length=0)
+    # loop through all traits
+    for (j in 2:ncol(table)) {
+      if(boot==FALSE){
+        cat("  Analyzing trait: ",j-1,"\n", file = stderr())
+      }
+      #Loading trait table
+      table_tmp = table[,c(1,j)]
+      colnames(table_tmp)[1] = "ID";
+      colnames(table_tmp)[2] = "Trait";
+      
+       # removing all entries not in tree 
+      table_tmp2 = data.table(table_tmp)
+      setkey(table_tmp2,ID)
+      table2 = table_tmp2[intersect(table_tmp2$ID,root_tree$tip.label)]
+      setkey(table2,ID)
 
-     #initializing result vectors and file names
-     positives = vector(mode="list",length=0)
-     cluster_size = numeric(length=0)
-     cluster_size_file = paste(opts[['-c']],'_t',j-1,".txt",sep="")
+       #initializing result vectors and file names
+      positives = vector(mode="list",length=0)
+      cluster_size = numeric(length=0)
+      cluster_dist = numeric(length=0)
+      cluster_size_file = paste(opts[['-c']],'_t',j-1,".txt",sep="")    
+      cluster_dist_file = paste(opts[['-d']],'_t',j-1,".txt",sep="")
 
-     cluster_dist = numeric(length=0)
-     cluster_dist_file = paste(opts[['-d']],'_t',j-1,".txt",sep="")
-
-     # Init cluster size & distance files
-     if (m == 1) {
-         cat(c("trait","tree","subtree", "distance","cluster_size"), '\n', file = cluster_size_file, 
+       # Init cluster size & distance files
+      if ((m == 1) & (boot == FALSE)){
+        cat(c("trait","tree","subtree", "distance","cluster_size"), '\n', file = cluster_size_file, 
             sep = "\t", fill = FALSE, labels = NULL,append = FALSE)
-         cat(c("trait","tree","subtree", "cluster","distance"), '\n', file = cluster_dist_file, 
+        cat(c("trait","tree","subtree", "cluster","distance"), '\n', file = cluster_dist_file, 
             sep = "\t", fill = FALSE, labels = NULL,append = FALSE)
-     }
+      }
 
 
-     #loop through all subtrees and determining if any subtrees have >P% positives
-     for (i in 1:length(subtree)){
-       tip_names = subtree[[i]]$tip.label
-       #change the value below if you want a new threshold
-       if (mean(table2[tip_names][,Trait]) > perc.share.cutoff ) {
-        match_test = match(tip_names,positives)
-        if (all(is.na(match_test))) {
+       #loop through all subtrees and determining if any subtrees have >P% positives
+      for (i in 1:length(subtree)){
+        tip_names = subtree[[i]]$tip.label
+        #change the value below if you want a new threshold
+        if (mean(table2[tip_names][,Trait]) > perc.share.cutoff ) {
+          match_test = match(tip_names,positives)
+          if (all(is.na(match_test))) {
             positives = c(positives,tip_names)
             cluster_dist = distRoot(subtree[[i]],tip_names, method=c("p"))
             cluster_size = append(cluster_size,mean(cluster_dist))
-
+            
             # printing to files###
-            cat(j-1,m,i,mean(cluster_dist),length(cluster_dist), '\n', file = cluster_size_file,
-                sep = "\t", fill = FALSE, labels = NULL,append = TRUE)
-
-            for(cdl in 1:length(cluster_dist)){
-              cat(j-1,m,i,cdl,cluster_dist[cdl], '\n', file = cluster_dist_file,
+            if(boot == FALSE){
+              cat(j-1,m,i,mean(cluster_dist),length(cluster_dist), '\n', file = cluster_size_file,
                   sep = "\t", fill = FALSE, labels = NULL,append = TRUE)
+              
+              for(cdl in 1:length(cluster_dist)){
+                cat(j-1,m,i,cdl,cluster_dist[cdl], '\n', file = cluster_dist_file,
+                    sep = "\t", fill = FALSE, labels = NULL,append = TRUE)
+              }
             }
-        }
-        else if (any(is.na(match_test))) {
-            print("Assertion error: NAs present")
-        }
-        else {
-          
+          }
+          else if (any(is.na(match_test))) {
+            cat("Assertion error: NAs present\n", file = stderr())
+          }
+          else {
+            
+          }
         }
       }
+
+      ##### find singletons ######
+      a = table2[table2$Trait == 1,][,ID]
+      g = as.character(a)
+
+      singletons_names = setdiff(g,positives)
+      if (length(singletons_names) > 0) {
+        for (h in 1:length(singletons_names)){
+          # weigh singletons with half
+          we = which.edge(root_tree,singletons_names[h])
+          singleton_edges = 0.5*root_tree$edge.length[we] 
+          cluster_size = append(cluster_size,singleton_edges)
+
+          cat(j-1,m,NA,singleton_edges,1, '\n', file = cluster_size_file, sep = "\t",
+              fill = FALSE, labels = NULL,append = TRUE)
+        }    
+      }
+    # means of cluster sizes
+    Mean_all[j-1,m] = mean(cluster_size)
     }
-
-    ##### find singletons ######
-    a = table2[table2$Trait == 1,][,ID]
-    g = as.character(a)
-
-    singletons_names = setdiff(g,positives)
-    if (length(singletons_names) > 0) {
-       for (h in 1:length(singletons_names)){
-           # weigh singletons with half
-           we = which.edge(root_tree,singletons_names[h])
-           singleton_edges = 0.5*root_tree$edge.length[we] 
-           cluster_size = append(cluster_size,singleton_edges)
-
-           cat(j-1,m,NA,singleton_edges,1, '\n', file = cluster_size_file, sep = "\t",
-             fill = FALSE, labels = NULL,append = TRUE)
-       }    
-    }
-  # means of cluster sizes
-  Mean_all[j-1,m] = mean(cluster_size)
   }
+  return(Mean_all)
 }
 
-#output file
-## formatting
-Mean_all = as.data.frame(t(Mean_all))
-col.n = sapply(1:(ncol(table)-1), function(x) paste(c('t', x), collapse=''))
-colnames(Mean_all) = col.n
-Mean_all$tree = 1:nrow(Mean_all)
-Mean_all = Mean_all[,c('tree', col.n)]
+
+format.means = function(x, table){
+  x = as.data.frame(t(x))
+  col.n = sapply(1:(ncol(table)-1), function(x) paste(c('t', x), collapse=''))
+  colnames(x) = col.n
+  x$tree = 1:nrow(x)
+  x = x[,c('tree', col.n)]
+  return(x)
+
+}
+
+# Tau_D for each bootstrap tree
+Mean_all = conc.trait(table, tree_all, opts)
+Mean_all = format.means(Mean_all, table)
 ## writting
 write.table(Mean_all,opts[['-t']], sep = "\t", quote=FALSE, row.names=FALSE)
+
+
+
+# non-paramtric bootstrapping
+## making randomly arranged trait tables
+random.traits = function(df){
+  df.rand = apply(df[,2:ncol(df)], 2, function(x) sample(x, length(x), replace=TRUE))
+  as.data.frame(df.rand)
+}
+table.l = list()
+for(i in 1:opts[['-b']]){
+  df.rand = apply(table[,2:ncol(table)], 2, function(x) sample(c(0,1), length(x), replace=TRUE))
+  df.rand = as.data.frame(df.rand)
+  tmp = colnames(df.rand)
+  df.rand$V1 = table[,1]
+  df.rand = df.rand[,c('V1', tmp)]
+  table.l[[i]] = df.rand
+}
+
+## (parallel) calling of conc.trait
+if(opts[['-p']] > 1){
+  cat('Bootstrapping in parallel\n', file = stderr())
+  cl1 = makeCluster(opts[['-p']], type='FORK')
+  mean_boots = parLapply(cl1, table.l, conc.trait, tree_all=tree_all, opts=opts, boot=TRUE)
+  stopCluster(cl1)
+} else {
+  mean_boots = lapply(table.l, conc.trait, tree_all=tree_all, opts=opts, boot=TRUE)
+}
+## formatting outpout
+for(i in 1:length(mean_boots)){
+  tmp = format.means(mean_boots[[i]], table)
+  tmp$bootstrap = i
+  mean_boots[[i]] = tmp
+}
+mean_boots = do.call(rbind, mean_boots)
+write.table(mean_boots,opts[['-u']], sep = "\t", quote=FALSE, row.names=FALSE)
+
+
+# calcalating p-value
+## getting mean Tau_D of real data
+mean_tauD = apply(Mean_all[,2:ncol(Mean_all)], 2, mean)
+## determine p-value
+cat('Trait\ttau_D\tp-value', '\n')
+for(n in names(mean_tauD)){
+  tau_D = mean_tauD[n]
+  boot_tauD = mean_boots[,n]
+  p = 1 - sum(tau_D > boot_tauD) / length(boot_tauD)
+  cat(n, tau_D, p, '\n')
+}
+
