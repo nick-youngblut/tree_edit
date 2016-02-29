@@ -6,12 +6,13 @@ rm(list=ls())
 # opt parsing
 suppressPackageStartupMessages(library(docopt))
 
-'Usage: concentrait.r [options] <tree> <trait>
+'Usage: concentrait.r [options] <tree> <root> <trait>
 
 options:
-  <tree>       Newick tree file (multitree)
-  <trait>      Trait table (no headers)
-  -b=<r>       Number trait bootstraps per bootstrap tree.
+  <tree>       Newick tree file (multitree).
+  <root>       Name of root taxon. 
+  <trait>      Trait table (no headers).
+  -b=<b>       Number trait bootstraps per bootstrap tree.
                [Default: 10]
   -s=<s>       Percent shared trait cutoff.
                [Default: 90]
@@ -99,7 +100,9 @@ table = read.table(opts[['<trait>']], sep = "\t", header=FALSE)
 #loop through all trees
 
 conc.trait = function(table, tree_all, opts, boot=FALSE){
-  cat('Analyzing bootstrap replicate...\n', file = stderr())
+  if(boot==TRUE){
+    cat('Analyzing bootstrap replicate...\n', file = stderr())
+  }
   # init
   n.trees = length(tree_all)
   Mean_all = matrix(nrow=ncol(table)-1,ncol=n.trees)
@@ -117,9 +120,10 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
     }
 
     #rooting tree with first taxon - change if different root
-    root_tree = root(tree,1,resolve.root=T)
+    tree = multi2di(tree)
+    root_tree = root(tree,opts[['<root>']]) #,resolve.root=T)
     #replacing negative branch lengths - e.g., from PHYLIP
-    root_tree$edge.length[root_tree$edge.length <= 0] =  0.00001
+    root_tree$edge.length[root_tree$edge.length <= 0] =  0.000001
     subtree = subtrees(root_tree, wait=FALSE)
 
     cluster_mean = numeric(length=0)
@@ -227,7 +231,6 @@ Mean_all = format.means(Mean_all, table)
 write.table(Mean_all,opts[['-t']], sep = "\t", quote=FALSE, row.names=FALSE)
 
 
-
 # non-paramtric bootstrapping
 ## making randomly arranged trait tables
 random.traits = function(df){
@@ -272,6 +275,7 @@ for(n in names(mean_tauD)){
   tau_D = mean_tauD[n]
   boot_tauD = mean_boots[,n]
   p = 1 - sum(tau_D > boot_tauD) / length(boot_tauD)
-  cat(n, tau_D, p, '\n')
+  line = paste(c(n, tau_D, p), collapse='\t')
+  cat(line, '\n')
 }
 
