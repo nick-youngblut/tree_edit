@@ -42,7 +42,7 @@ description:
   between trait values.
 
   This version of concenTRAIT will conduct the non-parametric
-  bootstrapping (in parallel) for calculating p-values).
+  bootstrapping (in parallel) for calculating p-values.
 
   Dependencies: data.table, adephylo, ape, docopt, parallel (if using >1 processor)
 
@@ -98,7 +98,6 @@ table = read.table(opts[['<trait>']], sep = "\t", header=FALSE)
 
 
 #loop through all trees
-
 conc.trait = function(table, tree_all, opts, boot=FALSE){
   if(boot==TRUE){
     cat('Analyzing bootstrap replicate...\n', file = stderr())
@@ -221,7 +220,6 @@ format.means = function(x, table){
   x$tree = 1:nrow(x)
   x = x[,c('tree', col.n)]
   return(x)
-
 }
 
 # Tau_D for each bootstrap tree
