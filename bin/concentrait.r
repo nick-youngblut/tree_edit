@@ -231,13 +231,13 @@ write.table(Mean_all,opts[['-t']], sep = "\t", quote=FALSE, row.names=FALSE)
 
 # non-paramtric bootstrapping
 ## making randomly arranged trait tables
-random.traits = function(df){
-  df.rand = apply(df[,2:ncol(df)], 2, function(x) sample(x, length(x), replace=TRUE))
-  as.data.frame(df.rand)
-}
+#random.traits = function(df){
+#  df.rand = apply(df[,2:ncol(df)], 2, function(x) sample(x, length(x), replace=TRUE))
+#  as.data.frame(df.rand)
+#}
 table.l = list()
 for(i in 1:opts[['-b']]){
-  df.rand = apply(table[,2:ncol(table)], 2, function(x) sample(c(0,1), length(x), replace=TRUE))
+  df.rand = apply(as.data.frame(table[,2:ncol(table)]), 2, function(x) sample(c(0,1), length(x), replace=TRUE))
   df.rand = as.data.frame(df.rand)
   tmp = colnames(df.rand)
   df.rand$V1 = table[,1]
@@ -266,7 +266,10 @@ write.table(mean_boots,opts[['-u']], sep = "\t", quote=FALSE, row.names=FALSE)
 
 # calcalating p-value
 ## getting mean Tau_D of real data
-mean_tauD = apply(Mean_all[,2:ncol(Mean_all)], 2, mean)
+mean_tauD = apply(as.data.frame(Mean_all[,2:ncol(Mean_all)]), 2, mean)
+if(length(mean_tauD) == 1){
+  names(mean_tauD) = c('t1')
+}
 ## determine p-value
 cat('Trait\ttau_D\tp-value', '\n')
 for(n in names(mean_tauD)){
