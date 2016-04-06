@@ -25,7 +25,9 @@ options:
   -u=<u>       Tau_D bootstrap table name.
                [Default: Tau_D_boot.txt]
   -x=<x>       Create a test tree & trait file with `x` taxa.
+               Output files: "concentrait_TEST*"
   -n=<b>       Number of simulated trees to make.
+               Note: this is only for the `x` option.
                [Default: 10]
   -p=<p>       Number of processors.
                [Default: 1]
@@ -38,13 +40,17 @@ description:
   values for each trait in the following columns
   (and no headers).
 
+  The newick tree file should consist of multiple bootstrap
+  trees, one bootstrap tree per line in the file.
+
   Tau_D is average consensus sequence distance (branch length)
   between trait values.
 
   This version of concenTRAIT will conduct the non-parametric
   bootstrapping (in parallel) for calculating p-values.
 
-  Dependencies: data.table, adephylo, ape, docopt, parallel (if using >1 processor)
+  Dependencies: data.table, adephylo, ape, docopt, parallel
+  (if using >1 processor).
 
   For more info: http://www.ess.uci.edu/group/amartiny/research/consentrait
 ' -> doc
