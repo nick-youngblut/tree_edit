@@ -27,7 +27,7 @@ options:
   -x=<x>       Create a test tree & trait file with `x` taxa.
                Output files: "concentrait_TEST*"
   -n=<b>       Number of simulated trees to make.
-               Note: this is only for the `x` option.
+               NOTE: this is only for the `x` option.
                [Default: 10]
   -p=<p>       Number of processors.
                [Default: 1]
@@ -53,6 +53,12 @@ description:
   (if using >1 processor).
 
   For more info: http://www.ess.uci.edu/group/amartiny/research/consentrait
+
+  OUTPUT
+  ------
+  NOTE: many accessory tables are written during the run, but the main
+  table with the tauD values for each trait are written to STDOUT.
+  So, to save your table, redirect the output to a file. 
 ' -> doc
 opts = docopt(doc)
 
