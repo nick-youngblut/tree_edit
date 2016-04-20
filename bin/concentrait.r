@@ -54,11 +54,10 @@ description:
 
   For more info: http://www.ess.uci.edu/group/amartiny/research/consentrait
 
-  OUTPUT
-  ------
-  NOTE: many accessory tables are written during the run, but the main
-  table with the tauD values for each trait are written to STDOUT.
-  So, to save your table, redirect the output to a file. 
+  OUTPUT:
+    Many accessory tables are written during the run, but the main
+    table with the tauD values for each trait are written to STDOUT.
+    So, to save your table, redirect the output to a file. 
 ' -> doc
 opts = docopt(doc)
 
