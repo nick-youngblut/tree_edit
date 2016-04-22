@@ -6,10 +6,10 @@ tree_edit: tools for manipulating phylogenies
 
 ### Clone the repo
 
-~~
+```sh
 git clone https:github.com/nyoungb2/tree_edit.git
 cd tree_edit
-~~
+```
 
 ### set up paths; add bash completion
 
@@ -18,9 +18,9 @@ command to your PATH and add bash completion
 for viewing subcommands when typing <tab> (much like git).
 NOTE: you MUST run the command in the "tree_edit" directory.
 
-~~
+```sh
 echo 'source '`pwd`'/sourceMe' >> ~/.bashrc
-~~
+```
 
 # SUPPORT AND DOCUMENTATION
 
