@@ -26,6 +26,9 @@ options:
                [Default: Tau_D_boot.txt]
   -x=<x>       Create a test tree & trait file with `x` taxa.
                Output files: "concentrait_TEST*"
+  -r=<r>       Model rate parameters for the example traits.
+               Lower values mean more conservatism.
+               [Default: 0.5,1000]
   -n=<b>       Number of simulated trees to make.
                NOTE: this is only for the `x` option.
                [Default: 10]
@@ -54,13 +57,18 @@ description:
 
   For more info: http://www.ess.uci.edu/group/amartiny/research/consentrait
 
+  `x` option:
+    You will still need to provide something for the `tree` `root` `trait`
+    commands. Example: `concentrait.r -x 20 tmp tmp tmp`
+
   OUTPUT:
     Many accessory tables are written during the run, but the main
     table with the tauD values for each trait are written to STDOUT.
     So, to save your table, redirect the output to a file. 
 ' -> doc
 opts = docopt(doc)
-
+opts[['-r']] = unlist(strsplit(opts[['-r']], split=','))
+opts[['-r']] = sapply(opts[['-r']], as.numeric)
 
 # packages
 pkgs <- c('data.table', 'adephylo', 'ape')
@@ -75,21 +83,43 @@ if(opts[['-p']] > 1){
 if(!is.null(opts[['-x']])){
   out.tree = 'concentrait_TEST.nwk'
   out.trait = 'concentrait_TEST.txt'
+  out.tree.pic1 = 'concentrait_TEST_trait1.pdf'
+  out.tree.pic2 = 'concentrait_TEST_trait2.pdf'
+
   # tree(s)
   n.taxa = as.numeric(opts['-x'])
-  tree = rmtree(opts[['-n']], n.taxa)
+  tree = rcoal(n.taxa)
   write.tree(tree, out.tree)
   
   ## traits
-  taxa = sapply(1:n.taxa, function(x) paste0('t', x))
+  taxa = tree$tip.label #sapply(1:n.taxa, function(x) paste0('t', x))
+  model = matrix(c(1,1,1,1), 2)
+  model1 = model * opts[['-r']][1]
+  trait1 = rTraitDisc(tree, model=model1, states=c(0, 1))
+  model2 = model * opts[['-r']][2]
+  trait2 = rTraitDisc(tree, model=model2, states=c(0, 1))
   df = data.frame('taxa' = taxa,
-    'trait1' = sample(c(0,1), n.taxa, replace=TRUE),
-    'trait2' = sample(c(0,1), n.taxa, replace=TRUE))
+    'trait1' = trait1,  
+    'trait2' = trait2)  
   write.table(df, out.trait, sep='\t', quote=FALSE,
               row.names=FALSE, col.names=FALSE)
-  msg = paste(c('Test files written: ', out.tree, ', ',
-    out.trait, '\n'), collapse='')
-  cat(msg, file = stderr())
+
+  # plotting tree
+  pdf(out.tree.pic1, bg='white')
+  plot(tree, show.tip.label=FALSE, adj=1)
+  trait1 = ifelse(trait1==0, 'blue', 'red')
+  tiplabels(pch=22, col=NULL, bg=trait1)
+  dev.off()
+  pdf(out.tree.pic2, bg='white')
+  plot(tree, show.tip.label=FALSE, adj=1)
+  trait2 = ifelse(trait2==0, 'blue', 'red')
+  tiplabels(pch=22, col=NULL, bg=trait2)
+  dev.off()
+  
+  # status
+  msg = paste(c('Test files written: ', out.tree,
+    out.trait, out.tree.pic1, out.tree.pic2), collapse='\n  ')
+  cat(paste0(msg,'\n'), file = stderr())
   
   opt <- options(show.error.messages=FALSE)
   on.exit(options(opt))
