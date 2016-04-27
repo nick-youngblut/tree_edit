@@ -85,8 +85,10 @@ if(!is.null(opts[['-x']])){
   df = data.frame('taxa' = taxa,
     'trait1' = sample(c(0,1), n.taxa, replace=TRUE),
     'trait2' = sample(c(0,1), n.taxa, replace=TRUE))
-  write.table(df, out.trait, sep='\t', quote=FALSE, row.names=FALSE, col.names=FALSE)
-  msg = paste(c('Test files written: ', out.tree, ', ', out.trait, '\n'), collapse='')
+  write.table(df, out.trait, sep='\t', quote=FALSE,
+              row.names=FALSE, col.names=FALSE)
+  msg = paste(c('Test files written: ', out.tree, ', ',
+    out.trait, '\n'), collapse='')
   cat(msg, file = stderr())
   
   opt <- options(show.error.messages=FALSE)
@@ -95,20 +97,26 @@ if(!is.null(opts[['-x']])){
 }
 
 
-# Params
-perc.share.cutoff = as.numeric(opts[['-s']])
-stopifnot((perc.share.cutoff >= 0) &  (perc.share.cutoff <= 100))
-perc.share.cutoff = perc.share.cutoff / 100
+#-- functions --#
+format.means = function(x, table){
+  x = as.data.frame(t(x))
+  col.n = sapply(1:(ncol(table)-1), function(x) paste(c('t', x), collapse=''))
+  colnames(x) = col.n
+  x$tree = 1:nrow(x)
+  x = x[,c('tree', col.n)]
+  return(x)
+}
 
 
-# Import
-## Newick tree (multitree) - replace to read.nexus if using nexus tress
-tree_all = read.tree(opts[['<tree>']],keep.multi = TRUE)
-## Trait table w. no headers
-table = read.table(opts[['<trait>']], sep = "\t", header=FALSE)
+init_data_files = function(cluster_size_file, cluster_dist_file){
+  cat(c("trait","tree","subtree", "distance","cluster_size"),
+      '\n', file = cluster_size_file, 
+      sep = "\t", fill = FALSE, labels = NULL,append = FALSE)
+  cat(c("trait","tree","subtree", "cluster","distance"),
+      '\n', file = cluster_dist_file, 
+      sep = "\t", fill = FALSE, labels = NULL,append = FALSE)
+}
 
-
-#loop through all trees
 conc.trait = function(table, tree_all, opts, boot=FALSE){
   if(boot==TRUE){
     cat('Analyzing bootstrap replicate...\n', file = stderr())
@@ -120,12 +128,13 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
   for (m in 1:length(tree_all)) {
     if(boot==FALSE){
       cat("Analyzing tree: ",m,"\n", file = stderr())
-    }
+    } 
   
     # testing if table and tree contain the same entries - else drop tips
     tree = tree_all[[m]]  
     z = subset(tree$tip.label,!(tree$tip.label %in% table[,1]))
     if (length(z) > 0) {
+      cat("  WARNING: dropping tips\n", file = stderr())
       drop.tip(tree,z)
     }
 
@@ -147,29 +156,26 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
       colnames(table_tmp)[1] = "ID";
       colnames(table_tmp)[2] = "Trait";
       
-       # removing all entries not in tree 
+      # removing all entries not in tree 
       table_tmp2 = data.table(table_tmp)
       setkey(table_tmp2,ID)
       table2 = table_tmp2[intersect(table_tmp2$ID,root_tree$tip.label)]
       setkey(table2,ID)
 
-       #initializing result vectors and file names
+      #initializing result vectors and file names
       positives = vector(mode="list",length=0)
       cluster_size = numeric(length=0)
       cluster_dist = numeric(length=0)
+      # output files
       cluster_size_file = paste(opts[['-c']],'_t',j-1,".txt",sep="")    
       cluster_dist_file = paste(opts[['-d']],'_t',j-1,".txt",sep="")
-
-       # Init cluster size & distance files
+      
+      # Init cluster size & distance files
       if ((m == 1) & (boot == FALSE)){
-        cat(c("trait","tree","subtree", "distance","cluster_size"), '\n', file = cluster_size_file, 
-            sep = "\t", fill = FALSE, labels = NULL,append = FALSE)
-        cat(c("trait","tree","subtree", "cluster","distance"), '\n', file = cluster_dist_file, 
-            sep = "\t", fill = FALSE, labels = NULL,append = FALSE)
+        init_data_files(cluster_size_file, cluster_dist_file)
       }
 
-
-       #loop through all subtrees and determining if any subtrees have >P% positives
+      #loop through all subtrees and determining if any subtrees have >P% positives
       for (i in 1:length(subtree)){
         tip_names = subtree[[i]]$tip.label
         #change the value below if you want a new threshold
@@ -180,9 +186,10 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
             cluster_dist = distRoot(subtree[[i]],tip_names, method=c("p"))
             cluster_size = append(cluster_size,mean(cluster_dist))
             
-            # printing to files###
+            # printing to files, if not a bootstrap
             if(boot == FALSE){
-              cat(j-1,m,i,mean(cluster_dist),length(cluster_dist), '\n', file = cluster_size_file,
+              cat(j-1,m,i,mean(cluster_dist),length(cluster_dist),
+                  '\n', file = cluster_size_file,
                   sep = "\t", fill = FALSE, labels = NULL,append = TRUE)
               
               for(cdl in 1:length(cluster_dist)){
@@ -212,8 +219,10 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
           singleton_edges = 0.5*root_tree$edge.length[we] 
           cluster_size = append(cluster_size,singleton_edges)
 
-          cat(j-1,m,NA,singleton_edges,1, '\n', file = cluster_size_file, sep = "\t",
-              fill = FALSE, labels = NULL,append = TRUE)
+          if(boot == FALSE){
+            cat(j-1,m,NA,singleton_edges,1, '\n', file=cluster_size_file,
+                sep = "\t",fill = FALSE, labels = NULL,append = TRUE)
+          }
         }    
       }
     # means of cluster sizes
@@ -224,14 +233,21 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
 }
 
 
-format.means = function(x, table){
-  x = as.data.frame(t(x))
-  col.n = sapply(1:(ncol(table)-1), function(x) paste(c('t', x), collapse=''))
-  colnames(x) = col.n
-  x$tree = 1:nrow(x)
-  x = x[,c('tree', col.n)]
-  return(x)
-}
+
+
+#-- main --#
+# Params
+perc.share.cutoff = as.numeric(opts[['-s']])
+stopifnot((perc.share.cutoff >= 0) &  (perc.share.cutoff <= 100))
+perc.share.cutoff = perc.share.cutoff / 100
+
+
+# Import
+## Newick tree (multitree) - replace to read.nexus if using nexus tress
+tree_all = read.tree(opts[['<tree>']],keep.multi = TRUE)
+## Trait table w. no headers
+table = read.table(opts[['<trait>']], sep = "\t", header=FALSE)
+
 
 # Tau_D for each bootstrap tree
 Mean_all = conc.trait(table, tree_all, opts)
@@ -243,12 +259,10 @@ write.table(Mean_all,opts[['-t']], sep = "\t", quote=FALSE, row.names=FALSE)
 # non-paramtric bootstrapping
 ## making randomly arranged trait tables
 #random.traits = function(df){
-#  df.rand = apply(df[,2:ncol(df)], 2, function(x) sample(x, length(x), replace=TRUE))
-#  as.data.frame(df.rand)
-#}
 table.l = list()
 for(i in 1:opts[['-b']]){
-  df.rand = apply(as.data.frame(table[,2:ncol(table)]), 2, function(x) sample(c(0,1), length(x), replace=TRUE))
+  df.rand = apply(as.data.frame(table[,2:ncol(table)]), 2,
+    function(x) sample(c(0,1), length(x), replace=TRUE))
   df.rand = as.data.frame(df.rand)
   tmp = colnames(df.rand)
   df.rand$V1 = table[,1]
@@ -260,12 +274,14 @@ for(i in 1:opts[['-b']]){
 if(opts[['-p']] > 1){
   cat('Bootstrapping in parallel\n', file = stderr())
   cl1 = makeCluster(opts[['-p']], type='FORK')
-  mean_boots = parLapply(cl1, table.l, conc.trait, tree_all=tree_all, opts=opts, boot=TRUE)
+  mean_boots = parLapply(cl1, table.l, conc.trait,
+    tree_all=tree_all, opts=opts, boot=TRUE)
   stopCluster(cl1)
 } else {
-  mean_boots = lapply(table.l, conc.trait, tree_all=tree_all, opts=opts, boot=TRUE)
+  mean_boots = lapply(table.l, conc.trait,
+    tree_all=tree_all, opts=opts, boot=TRUE)
 }
-## formatting outpout
+## formatting output
 for(i in 1:length(mean_boots)){
   tmp = format.means(mean_boots[[i]], table)
   tmp$bootstrap = i
