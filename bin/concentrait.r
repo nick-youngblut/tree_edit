@@ -38,10 +38,11 @@ options:
 
 description:
   The script requires two input files as arguments:
-  a Newick Tree and tab delimited text file with names
-  of each taxon in the first column and then 0 or 1
-  values for each trait in the following columns
-  (and no headers).
+    1) a Newick Tree
+    2) a tab delimited text file with names of
+       each taxon in the first column and then 0 or 1
+       values for each trait in the following columns
+       (and no headers)
 
   The newick tree file should consist of multiple bootstrap
   trees, one bootstrap tree per line in the file.
@@ -52,19 +53,20 @@ description:
   This version of concenTRAIT will conduct the non-parametric
   bootstrapping (in parallel) for calculating p-values.
 
+  The `x` option:
+    You will still need to provide something for the `tree` `root` `trait`
+    commands. Example: `concentrait.r -x 20 tmp tmp tmp`
+
   Dependencies: data.table, adephylo, ape, docopt, parallel
   (if using >1 processor).
 
   For more info: http://www.ess.uci.edu/group/amartiny/research/consentrait
 
-  `x` option:
-    You will still need to provide something for the `tree` `root` `trait`
-    commands. Example: `concentrait.r -x 20 tmp tmp tmp`
-
   OUTPUT:
     Many accessory tables are written during the run, but the main
     table with the tauD values for each trait are written to STDOUT.
-    So, to save your table, redirect the output to a file. 
+    So, to save your table, redirect the output to a file.
+
 ' -> doc
 opts = docopt(doc)
 opts[['-r']] = unlist(strsplit(opts[['-r']], split=','))
@@ -208,8 +210,8 @@ conc.trait = function(table, tree_all, opts, boot=FALSE){
       #loop through all subtrees and determining if any subtrees have >P% positives
       for (i in 1:length(subtree)){
         tip_names = subtree[[i]]$tip.label
-        #change the value below if you want a new threshold
-        if (mean(table2[tip_names][,Trait]) > perc.share.cutoff ) {
+        # apply % shared cutoff
+        if (mean(table2[tip_names][,Trait]) > perc.share.cutoff) {
           match_test = match(tip_names,positives)
           if (all(is.na(match_test))) {
             positives = c(positives,tip_names)
@@ -277,7 +279,6 @@ perc.share.cutoff = perc.share.cutoff / 100
 tree_all = read.tree(opts[['<tree>']],keep.multi = TRUE)
 ## Trait table w. no headers
 table = read.table(opts[['<trait>']], sep = "\t", header=FALSE)
-
 
 # Tau_D for each bootstrap tree
 Mean_all = conc.trait(table, tree_all, opts)
