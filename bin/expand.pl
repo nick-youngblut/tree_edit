@@ -96,9 +96,12 @@ sub load_count{
     chomp;
     if($.==1){	# header
       @header = split /\t/;
+      @header = map{s/"//g; $_} @header;
     }
     else{
       my @line = split /\t/;
+      @line = map{s/"//g; $_} @line;
+      
       for my $i (2..$#line){
 	push(@{$cnt_tbl{$line[0]}}, $header[$i]) if $line[$i] > 0;
       }
